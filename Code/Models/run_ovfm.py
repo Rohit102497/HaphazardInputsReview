@@ -18,7 +18,7 @@ def run_ovfm(X, Y, X_haphazard, mask, num_runs, model_params_list, initial_buffe
 
             startIdx = 1 if initial_buffer==0 else initial_buffer
             start_time = time.time()
-            model = OVFM(*model_params, X_haphazard[:startIdx], mask[:startIdx], Y[:startIdx])
+            model = OVFM(*model_params, X_haphazard[:startIdx], mask[:startIdx])
             for i in tqdm(range(startIdx, len(Y))):
                 x, x_mask, y = X_haphazard[i], mask[i], Y[i]
                 y_pred, y_logit = model.partial_fit(x, x_mask, y)
@@ -26,7 +26,8 @@ def run_ovfm(X, Y, X_haphazard, mask, num_runs, model_params_list, initial_buffe
                 Y_logits.append(y_logit)
             taken_time = time.time() - start_time
             del model
-            eval_list.append(get_all_metrics(Y[startIdx:], np.array(Y_pred).reshape(-1, 1), np.array(Y_logits).reshape(-1, 1), taken_time))
+            eval_list.append(get_all_metrics(Y[startIdx:], np.array(Y_pred).reshape(-1, 1),
+                                            np.array(Y_logits).reshape(-1, 1), taken_time))
         result[str(model_params)] = eval_list
      # The structure of results: It is dictionary with key being the number of Top M features and value are the metrics.
     return result

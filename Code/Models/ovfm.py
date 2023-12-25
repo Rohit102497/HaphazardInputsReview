@@ -171,11 +171,7 @@ class TransformFunction:
         # Continuous columns: normal initialization
         mean = np.mean(X_batch[:, self.cont_indices] * X_batch_mask[:, self.cont_indices], axis = 0) # returns an array of shape (len(self.cont_indices), )
         std = np.std(X_batch[:, self.cont_indices] * X_batch_mask[:, self.cont_indices], axis = 0) # returns an array of shape (len(self.cont_indices), )
-
         '''In OVFM source code, they're not taking column wise mean and std, but of the whole matrix (see code below)'''
-        # mean = np.mean(X_batch[:, self.cont_indices] * X_batch_mask[:, self.cont_indices]) # return a single value
-        # std = np.std(X_batch[:, self.cont_indices] * X_batch_mask[:, self.cont_indices]) # returns a single value
-
         self.window[:, self.cont_indices] = np.random.normal(mean, std, size=(self.window_size, len(self.cont_indices)))
 
 

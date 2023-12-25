@@ -253,9 +253,9 @@ class AuxDrop_ODL(nn.Module):
 
 
 class AuxDrop_ODL_AuxLayer1stlayer(nn.Module):
-    def __init__(self, features_size, 
+    def __init__(self,
                  max_num_hidden_layers, qtd_neuron_per_hidden_layer, 
-                 n_classes, aux_layer, n_neuron_aux_layer, 
+                 n_classes, n_neuron_aux_layer, 
                  batch_size=1, b=0.99, n=0.01, s=0.2, 
                  dropout_p=0.5, n_aux_feat = 3, use_cuda=False):
         super(AuxDrop_ODL_AuxLayer1stlayer, self).__init__()
@@ -266,11 +266,9 @@ class AuxDrop_ODL_AuxLayer1stlayer(nn.Module):
         self.device = torch.device(
             "cuda:0" if torch.cuda.is_available() and use_cuda else "cpu")
 
-        self.features_size = features_size
         self.max_num_hidden_layers = max_num_hidden_layers
         self.qtd_neuron_per_hidden_layer = qtd_neuron_per_hidden_layer
         self.n_classes = n_classes
-        self.aux_layer = aux_layer
         self.n_neuron_aux_layer = n_neuron_aux_layer
         self.batch_size = batch_size
 
@@ -288,9 +286,9 @@ class AuxDrop_ODL_AuxLayer1stlayer(nn.Module):
         self.hidden_layers = []
         self.output_layers = []
 
-        # The number of hidden layers would be "max_num_hidden_layers". The input to the first layer is the base features i.e. "features_size" and the auxiliary features.
+        # The number of hidden layers would be "max_num_hidden_layers". First layer is the aux layer
         self.hidden_layers.append(
-            nn.Linear(features_size + n_aux_feat, n_neuron_aux_layer))
+            nn.Linear(n_aux_feat, n_neuron_aux_layer))
         self.hidden_layers.append(
                     nn.Linear(n_neuron_aux_layer, qtd_neuron_per_hidden_layer))
         for i in range(max_num_hidden_layers - 2):
@@ -326,11 +324,11 @@ class AuxDrop_ODL_AuxLayer1stlayer(nn.Module):
             self.hidden_layers[i].bias.grad.data.fill_(0)
 
     # This function predicts the output from each layer,calculates the loss and do gradient descent and alpha update.
-    def update_weights(self, X, aux_feat, aux_mask, Y, show_loss):
+    def update_weights(self, aux_feat, aux_mask, Y, show_loss):
         Y = torch.from_numpy(Y).to(self.device)
 
         # Predictions from each layer using the implemented forward function.
-        predictions_per_layer = self.forward(X, aux_feat, aux_mask)
+        predictions_per_layer = self.forward(aux_feat, aux_mask)
 
         real_output = torch.sum(torch.mul(
                 self.alpha.view(self.max_num_hidden_layers - 1, 1).repeat(1, self.batch_size).view(
@@ -400,18 +398,17 @@ class AuxDrop_ODL_AuxLayer1stlayer(nn.Module):
         self.alpha_array.append(self.alpha.detach().numpy())
 
     # Forward pass. Get the output from each layer.     
-    def forward(self, X, aux_feat, aux_mask):
+    def forward(self, aux_feat, aux_mask):
         hidden_connections = []
         linear_x = []
         relu_x = []
 
-        X = torch.from_numpy(X).float().to(self.device)
         aux_feat = torch.from_numpy(aux_feat).float().to(self.device)
         aux_mask = torch.from_numpy(aux_mask).float().to(self.device)
 
         # Forward pass to the Aux layer.
         # Input to the aux layer will be the output from its previous layer and the incoming auxiliary inputs.
-        linear_x.append(self.hidden_layers[0](torch.cat((aux_feat, X), dim=1)))
+        linear_x.append(self.hidden_layers[0](aux_feat))
         relu_x.append(F.relu(linear_x[0]))
         # Based on the incoming aux data, the aux inputs which do not come gets included in the dropout probability.
         # Based on that we calculate the probability to drop the left over neurons in auxiliary layer.
@@ -449,8 +446,7 @@ class AuxDrop_ODL_AuxLayer1stlayer(nn.Module):
             raise Exception(
                 "Wrong dimension for this Y data. It should have only one dimensions.")
     
-    def partial_fit(self, X_data, aux_data, aux_mask, Y_data, show_loss=False):
-        self.validate_input_X(X_data)
+    def partial_fit(self, aux_data, aux_mask, Y_data, show_loss=False):
         self.validate_input_X(aux_data)
         self.validate_input_Y(Y_data)
-        self.update_weights(X_data, aux_data, aux_mask, Y_data, show_loss)
+        self.update_weights(aux_data, aux_mask, Y_data, show_loss)

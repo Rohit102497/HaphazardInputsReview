@@ -7,7 +7,8 @@ import sys
 sys.path.append('/code/DataCode/')
 
 #--------------Import Functions--------------#
-from Utils import utils, metric_utils, dummy_feat
+from Utils import utils, metric_utils
+from Utils.utils import dummy_feat, impute_data
 from DataCode import data_load
 from Models.run_nb3 import run_nb3
 from Models.run_fae import run_fae
@@ -15,7 +16,8 @@ from Models.run_olvf import run_olvf
 from Models.run_dynfo import run_dynfo
 from Models.run_orf3v import run_orf3v
 from Models.run_ocds import run_ocds
-from Models.run_auxdrop import run_auxdrop
+from Models.run_auxdrop import run_auxdrop, run_auxdrop_arch_change
+from Models.run_ovfm import run_ovfm
 
 #--------------All Variables--------------#
 if __name__ == '__main__':
@@ -49,14 +51,22 @@ if __name__ == '__main__':
                         help = "The storage size of initial buffer trainig")
     parser.add_argument('--ifimputation', default = False, type = bool,
                         help = "If some features needs to be imputed")
+    parser.add_argument('--imputationtype', default = 'forwardfill', type = str,
+                        choices = ['forwardfill', 'forwardmean', 'zerofill'],
+                        help = "The type of imputation technique to create base features")
     parser.add_argument('--ifdummyfeat', default = False, type = bool,
                         help = "If some dummy features needs to be created")
+    parser.add_argument('--dummytype', default = 'standardnormal', type = str,
+                        help = "The type of technique to create dummy base features")
+    parser.add_argument('--ndummyfeat', default = 1, type = int,
+                        help = "The number of dummy features to create")    
     parser.add_argument('--ifAuxDropNoAssumpArchChange', default = False, type = bool,
                         help = "If the Aux-Drop architecture needs to be changed to handle no assumption")
     parser.add_argument('--nruns', default = 5, type =  int,
                         help = "The number of times a method should runs. For navie Bayes, it would be 1 because it is a deterministic method.")
 
     args = parser.parse_args()
+
     seed = args.seed
     type = args.type
     data_name = args.dataname
@@ -66,9 +76,13 @@ if __name__ == '__main__':
     method_name = args.methodname
     initial_buffer = args.initialbuffer
     if_imputation = args.ifimputation
+    imputation_type = args.imputationtype
     if_dummy_feat = args.ifdummyfeat
+    dummy_type = args.dummytype
+    n_dummy_feat = args.ndummyfeat
     if_auxdrop_no_assumption_arch_change = args.ifAuxDropNoAssumpArchChange
     n_runs = args.nruns
+    
     
     data_type = "Synthetic"
     if data_name in ["imdb", "diabetes_us", "spamassasin", "naticusdroid", "crowdsense"]:
@@ -163,9 +177,32 @@ if __name__ == '__main__':
         model_params_list = [(num_feats, T, gamma, alpha, beta0, beta1, beta2)]
     elif method_name == "auxdrop":
         if if_auxdrop_no_assumption_arch_change:
-            pass
+            # max_num_hidden_layers - Number of hidden layers
+            # qtd_neuron_per_hidden_layer - Number of nodes in each hidden layer except the AuxLayer
+            # n_classes - The total number of classes (output labels)
+            # n_neuron_aux_layer - The total numebr of neurons in the AuxLayer
+            # batch_size - The batch size is always 1 since it is based on stochastic gradient descent
+            # b - discount rate
+            # n - learning rate
+            # s - smoothing rate
+            # dropout_p - The dropout rate in the AuxLayer
+            # n_aux_feat - Number of auxiliary features
+            # aux_feat_prob - The probability of each auxiliary feature being available at each point in time
+            max_num_hidden_layers = 6 # Number of hidden layers
+            qtd_neuron_per_hidden_layer = 50 # Number of nodes in each hidden layer except the AuxLayer
+            n_classes = 2 # The total number of classes (output labels)
+            n_neuron_aux_layer = 200 # The total numebr of neurons in the AuxLayer
+            batch_size = 1 # The batch size is always 1 since it is based on stochastic gradient descent
+            b = 0.99 # discount rate
+            s = 0.2 # learning rate
+            n = 0.1 # smoothing rate
+            dropout_p = 0.5 # The dropout rate in the AuxLayer
+            n_aux_feat = X.shape[1] # Number of auxiliary features
+            use_cuda = False
+            model_params_list = [(max_num_hidden_layers, qtd_neuron_per_hidden_layer,
+                    n_classes, n_neuron_aux_layer, batch_size, b, n, s, 
+                    dropout_p, n_aux_feat, use_cuda)]
         else:
-
             # features_size - Number of base features
             # max_num_hidden_layers - Number of hidden layers
             # qtd_neuron_per_hidden_layer - Number of nodes in each hidden layer except the AuxLayer
@@ -196,18 +233,29 @@ if __name__ == '__main__':
                 n_aux_feat = X.shape[1] - features_size # We impute some features (feature_size) to create base features. 
                     # Therefore number of base features would be total number of features - total number of base features
                 # Create dataset
+                X_base = impute_data(X_haphazard[:, :features_size],
+                                    mask[:, :features_size], imputation_type)
+                X_aux_new = X_haphazard[:, features_size:]
+                aux_mask = mask[:, features_size:]
             elif if_dummy_feat:
-                features_size = 1 # We create dummy feature as base feature
+                features_size = n_dummy_feat # We create dummy feature as base feature
                 # Create dataset
-                X_base = dummy_feat(X_haphazard.shape[0], features_size)
+                X_base = dummy_feat(X_haphazard.shape[0], features_size, dummy_type)
                 X_aux_new = X_haphazard
                 aux_mask = mask
-
-        model_params_list = [(features_size, max_num_hidden_layers, qtd_neuron_per_hidden_layer,
+            model_params_list = [(features_size, max_num_hidden_layers, qtd_neuron_per_hidden_layer,
                     n_classes, aux_layer, n_neuron_aux_layer, batch_size, b, n, s, 
                     dropout_p, n_aux_feat, use_cuda)]
+    elif method_name == "ovfm":
+        # Model Config
+        c = 0.01 # Model sparsificity
+        all_cont = False # Check which features are continous and ordinal
+        lr = .01 # Learning rate
+        B = 30 # Buffer Size. To calculate mean and standard deviation
+        model_params_list = [(c, all_cont, lr, B)]
 
     #--------------Run Model--------------#
+    result = {}
     if method_name == "nb3":
         results = run_nb3(X, X_haphazard, Y, numTopFeats_percent, n_runs)
     elif method_name == "fae":
@@ -222,10 +270,11 @@ if __name__ == '__main__':
         result = run_ocds(X, Y, X_haphazard, mask, n_runs, model_params_list)
     elif method_name == "auxdrop":
         if if_auxdrop_no_assumption_arch_change:
-            pass
+            result = run_auxdrop_arch_change(Y, X_haphazard, mask, n_runs, model_params_list)
         else:
             result = run_auxdrop(X_base, X_aux_new, aux_mask, Y, n_runs, model_params_list)
-
+    elif method_name == "ovfm":
+        result = run_ovfm(X, Y, X_haphazard, mask, n_runs, model_params_list, initial_buffer)
     print(result)
 
     #--------------Calculate all Metrics--------------#
