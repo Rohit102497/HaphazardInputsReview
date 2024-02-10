@@ -5,7 +5,17 @@ from data_utils import data_load_wpbc, data_load_wdbc, data_load_wbc, data_load_
 from data_utils import data_load_australian, data_load_german, data_load_ipd, data_load_svmguide3
 from data_utils import data_load_krvskp, data_load_spambase, data_load_magic04, data_load_a8a
 from data_utils import data_load_susy, data_load_higgs, data_load_diabetes_f
-from data_utils import data_load_diabetes_us, data_load_imdb
+from data_utils import data_load_diabetes_us, data_load_imdb, data_load_spamassasin
+from data_utils import data_load_crowdsense_c3, data_load_crowdsense_c5
+
+def check_mask_each_instance(mask):
+    index_0 = np.where(np.sum(mask, axis = 1) == 0)
+    random_index = np.random.randint(mask.shape[1], size = (len(index_0[0])))
+    # print(mask.shape, index_0, len(index_0[0]))
+    for i in range(len(index_0[0])):
+        mask[index_0[0][i], random_index[i]] = 1
+    return mask
+
 
 def data_load_synthetic(data_folder = "wpbc", type = "variable_p", p_available = 0.75, if_base_feat = False):
 
@@ -20,6 +30,7 @@ def data_load_synthetic(data_folder = "wpbc", type = "variable_p", p_available =
         if type == "variable_p" and not if_base_feat:
             mask = (np.random.random((number_of_instances, n_feat)) < p_available).astype(float)
             mask[:,32][np.where(np.isnan(X[:,32]))] = 0
+            mask = check_mask_each_instance(mask)
             X_haphazard = np.where(mask, X, 0)
             return X, Y, X_haphazard, mask
     
@@ -31,6 +42,7 @@ def data_load_synthetic(data_folder = "wpbc", type = "variable_p", p_available =
         # Masking
         if type == "variable_p" and not if_base_feat:
             mask = (np.random.random((number_of_instances, n_feat)) < p_available).astype(float)
+            mask = check_mask_each_instance(mask)
             X_haphazard = np.where(mask, X, 0)
             return X, Y, X_haphazard, mask
         
@@ -42,6 +54,7 @@ def data_load_synthetic(data_folder = "wpbc", type = "variable_p", p_available =
         # Masking
         if type == "variable_p" and not if_base_feat:
             mask = (np.random.random((number_of_instances, n_feat)) < p_available).astype(float)
+            mask = check_mask_each_instance(mask)
             X_haphazard = np.where(mask, X, 0)
             return X, Y, X_haphazard, mask
 
@@ -53,6 +66,7 @@ def data_load_synthetic(data_folder = "wpbc", type = "variable_p", p_available =
         # Masking
         if type == "variable_p" and not if_base_feat:
             mask = (np.random.random((number_of_instances, n_feat)) < p_available).astype(float)
+            mask = check_mask_each_instance(mask)
             X_haphazard = np.where(mask, X, 0)
             return X, Y, X_haphazard, mask
 
@@ -67,6 +81,7 @@ def data_load_synthetic(data_folder = "wpbc", type = "variable_p", p_available =
         if type == "variable_p" and not if_base_feat:
             mask = (np.random.random((number_of_instances, n_feat)) < p_available).astype(float)
             mask[:,5][np.where(np.isnan(X[:,5]))] = 0
+            mask = check_mask_each_instance(mask)
             X_haphazard = np.where(mask, X, 0)
             return X, Y, X_haphazard, mask
 
@@ -78,6 +93,7 @@ def data_load_synthetic(data_folder = "wpbc", type = "variable_p", p_available =
         # Masking
         if type == "variable_p" and not if_base_feat:
             mask = (np.random.random((number_of_instances, n_feat)) < p_available).astype(float)
+            mask = check_mask_each_instance(mask)
             X_haphazard = np.where(mask, X, 0)
             return X, Y, X_haphazard, mask
             
@@ -89,6 +105,7 @@ def data_load_synthetic(data_folder = "wpbc", type = "variable_p", p_available =
         # Masking
         if type == "variable_p" and not if_base_feat:
             mask = (np.random.random((number_of_instances, n_feat)) < p_available).astype(float)
+            mask = check_mask_each_instance(mask)
             X_haphazard = np.where(mask, X, 0)
             return X, Y, X_haphazard, mask
         
@@ -100,6 +117,7 @@ def data_load_synthetic(data_folder = "wpbc", type = "variable_p", p_available =
         # Masking
         if type == "variable_p" and not if_base_feat:
             mask = (np.random.random((number_of_instances, n_feat)) < p_available).astype(float)
+            mask = check_mask_each_instance(mask)
             X_haphazard = np.where(mask, X, 0)
             return X, Y, X_haphazard, mask
     
@@ -111,6 +129,7 @@ def data_load_synthetic(data_folder = "wpbc", type = "variable_p", p_available =
         # Masking
         if type == "variable_p" and not if_base_feat:
             mask = (np.random.random((number_of_instances, n_feat)) < p_available).astype(float)
+            mask = check_mask_each_instance(mask)
             X_haphazard = np.where(mask, X, 0)
             return X, Y, X_haphazard, mask
         
@@ -122,6 +141,7 @@ def data_load_synthetic(data_folder = "wpbc", type = "variable_p", p_available =
         # Masking
         if type == "variable_p" and not if_base_feat:
             mask = (np.random.random((number_of_instances, n_feat)) < p_available).astype(float)
+            mask = check_mask_each_instance(mask)
             X_haphazard = np.where(mask, X, 0)
             return X, Y, X_haphazard, mask
         
@@ -133,6 +153,7 @@ def data_load_synthetic(data_folder = "wpbc", type = "variable_p", p_available =
         # Masking
         if type == "variable_p" and not if_base_feat:
             mask = (np.random.random((number_of_instances, n_feat)) < p_available).astype(float)
+            mask = check_mask_each_instance(mask)
             X_haphazard = np.where(mask, X, 0)
             return X, Y, X_haphazard, mask
         
@@ -144,6 +165,7 @@ def data_load_synthetic(data_folder = "wpbc", type = "variable_p", p_available =
         # Masking
         if type == "variable_p" and not if_base_feat:
             mask = (np.random.random((number_of_instances, n_feat)) < p_available).astype(float)
+            mask = check_mask_each_instance(mask)
             X_haphazard = np.where(mask, X, 0)
             return X, Y, X_haphazard, mask
         
@@ -155,6 +177,7 @@ def data_load_synthetic(data_folder = "wpbc", type = "variable_p", p_available =
         # Masking
         if type == "variable_p" and not if_base_feat:
             mask = (np.random.random((number_of_instances, n_feat)) < p_available).astype(float)
+            mask = check_mask_each_instance(mask)
             X_haphazard = np.where(mask, X, 0)
             return X, Y, X_haphazard, mask
         
@@ -166,6 +189,7 @@ def data_load_synthetic(data_folder = "wpbc", type = "variable_p", p_available =
         # Masking
         if type == "variable_p" and not if_base_feat:
             mask = (np.random.random((number_of_instances, n_feat)) < p_available).astype(float)
+            mask = check_mask_each_instance(mask)
             X_haphazard = np.where(mask, X, 0)
             return X, Y, X_haphazard, mask
         
@@ -177,6 +201,7 @@ def data_load_synthetic(data_folder = "wpbc", type = "variable_p", p_available =
         # Masking
         if type == "variable_p" and not if_base_feat:
             mask = (np.random.random((number_of_instances, n_feat)) < p_available).astype(float)
+            mask = check_mask_each_instance(mask)
             X_haphazard = np.where(mask, X, 0)
             return X, Y, X_haphazard, mask
         
@@ -194,3 +219,25 @@ def data_load_real(data_folder = "diabetes_us"):
         mask[np.isnan(X)] = 0
         X_haphazard = np.where(mask, X, 0)
         return X, Y, X_haphazard, mask
+    
+    if data_folder == "spamassasin":
+        X, Y = data_load_spamassasin(data_folder)    
+        mask = np.ones((X.shape))
+        mask[np.isnan(X)] = 0
+        X_haphazard = np.where(mask, X, 0)
+        return X, Y, X_haphazard, mask
+    
+    if data_folder == "crowdsense_c3":
+        X, Y = data_load_crowdsense_c3(data_folder)    
+        mask = np.ones((X.shape))
+        mask[np.isnan(X)] = 0
+        X_haphazard = np.where(mask, X, 0)
+        return X, Y, X_haphazard, mask
+
+    if data_folder == "crowdsense_c5":
+        X, Y = data_load_crowdsense_c5(data_folder)    
+        mask = np.ones((X.shape))
+        mask[np.isnan(X)] = 0
+        X_haphazard = np.where(mask, X, 0)
+        return X, Y, X_haphazard, mask
+    

@@ -1,0 +1,2 @@
+,Num. Errors,Accuracy,AUROC,AUPRC,Bal. Accuracy,Time
+"{'decay_choice': 4, 'contribute_error_rate': 0.001, 'decay_coef_change': False, 'batch_size_denominator': [20]}",472764.20(31.21),52.72(0.00),51.54(0.00),54.09(0.00),50.97(0.00),8675.39(335.33)

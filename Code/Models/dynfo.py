@@ -1,6 +1,18 @@
 import random
 import numpy as np
 
+def remove_elements_by_indices(input_list, indices_to_remove):
+    # Create a new list with elements at indices not in indices_to_remove
+    result_list = [element for index, element in enumerate(input_list) if index not in indices_to_remove]
+    return result_list
+
+def cal_partial(l_y, l, y_sign):
+    mask= l_y == 0
+    flag = np.array([0]*l)
+    flag[~mask] = y_sign[~mask]/l_y[~mask]
+    flag[mask] = 0
+    return flag
+
 class Queue:
     def __init__(self, n: int):
         self.queue = []
@@ -38,46 +50,62 @@ class DecisionStump:
         self.threshold = None
         self.prediction_positive = None
         self.prediction_negative = None
+        self.probability_positive = None
+        self.probability_negative = None
+    
+
 
     def fit(self, X: np.array, y: np.array, feature_index: int):
         y = y.reshape(-1)
         self.accepted_features.add(feature_index)
 
-        unique_values = set(X)
-        for threshold in unique_values:
-            mask = X <= threshold
+        total_samples = len(y)
+        if total_samples != 0:
+            X = X.reshape(total_samples, 1)
+            y = np.array([y]*total_samples)
+            mask = X.T <= X
+            l_y_positive = np.sum(mask, axis = 1)
+            l_y_negative = total_samples - l_y_positive
+            y_pos_1 = np.sum(y*mask, axis = 1)
+            y_pos_0 = l_y_positive - y_pos_1
+            y_neg_1 = np.sum(y*(~mask), axis = 1)
+            y_neg_0 = l_y_negative - y_neg_1
+
+            y_pos_1_partial = cal_partial(l_y_positive, total_samples, y_pos_1)
+            y_pos_0_partial = cal_partial(l_y_positive, total_samples, y_pos_0)
+            y_neg_1_partial = cal_partial(l_y_negative, total_samples, y_neg_1)
+            y_neg_0_partial = cal_partial(l_y_negative, total_samples, y_neg_0)
+
+            gini_positive = 1 - ((y_pos_1_partial)**2 + (y_pos_0_partial)**2)
+            gini_negative = 1 - ((y_neg_1_partial)**2 + (y_neg_0_partial)**2)
+            gini = (l_y_positive/ total_samples)*gini_positive + (l_y_negative/ total_samples)*gini_negative
+
+            best_idx = np.argmin(gini)
+
+            self.best_gini = gini[best_idx]
+            self.feature_index = feature_index
+            self.threshold = X[best_idx]
+
+            mask = mask[best_idx].reshape(-1)
+            y = y[0].reshape(-1)
             y_positive = y[mask]
             y_negative = y[~mask]
 
-            gini = self.calculate_gini(y_positive, y_negative)
-
-            if gini < self.best_gini:
-                self.best_gini = gini
-                self.feature_index = feature_index
-                self.threshold = threshold
-                self.prediction_positive = self.get_majority_class(y_positive)
-                self.prediction_negative = self.get_majority_class(y_negative)
+            self.prediction_positive = self.get_majority_class(y_positive)
+            self.prediction_negative = self.get_majority_class(y_negative)
+            self.probability_positive = sum(y_positive == self.prediction_positive)/len(y_positive) if len(y_positive)!=0 else 0.0
+            self.probability_negative = sum(y_negative == self.prediction_negative)/len(y_negative) if len(y_negative)!=0 else 0.0
+    
+    # def calculate_gini(self, y_positive: np.array, y_negative: np.array) -> float:
+    #     total_samples = len(y_positive) + len(y_negative)
+    #     gini_positive = 1.0 - sum((np.sum(y_positive == c) / len(y_positive)) ** 2 for c in set(y_positive))
+    #     gini_negative = 1.0 - sum((np.sum(y_negative == c) / len(y_negative)) ** 2 for c in set(y_negative))
+    #     gini = (len(y_positive) / total_samples) * gini_positive + (len(y_negative) / total_samples) * gini_negative
+    #     return gini  
 
     def predict(self, X: np.array) -> int:
-        return self.prediction_positive if X[self.feature_index] <= self.threshold else self.prediction_negative
-
-    # def predict_logit(self, X: np.array) -> float:
-    #     prediction = self.predict(X)
-    #     logit = 1.0 if prediction == self.prediction_positive else -1.0
-    #     return logit
-    
-    # def predict_proba(self, X: np.array) -> float:
-    #     # Calculate probabilities using a sigmoid function
-    #     logit = self.predict_logit(X)
-    #     probability = 1 / (1 + np.exp(-logit))
-    #     return probability
-
-    def calculate_gini(self, y_positive: np.array, y_negative: np.array) -> float:
-        total_samples = len(y_positive) + len(y_negative)
-        gini_positive = 1.0 - sum((np.sum(y_positive == c) / len(y_positive)) ** 2 for c in set(y_positive))
-        gini_negative = 1.0 - sum((np.sum(y_negative == c) / len(y_negative)) ** 2 for c in set(y_negative))
-        gini = (len(y_positive) / total_samples) * gini_positive + (len(y_negative) / total_samples) * gini_negative
-        return gini
+        return (self.prediction_positive, self.probability_positive) if X[self.feature_index] <= self.threshold \
+                else (self.prediction_negative, self.probability_negative)
 
     def get_majority_class(self, y: list) -> int:
         unique_labels = set(y)
@@ -96,13 +124,12 @@ class Window(Queue):
         self.push(accuracy)
     
     def errorRate(self):
-        return sum(self.queue)/len(self.queue)
+        return 1 - (sum(self.queue)/len(self.queue))
 
 class DynFo:
-    def __init__(self, alpha = 0.5, beta = 0.3, delta = 0.01, epsilon = 0.001, 
-                gamma = 0.7, M = 1000, N = 1000, theta1=0.05, theta2=0.6, 
-                Xs: np.array=None, X_masks: np.array=None, Ys: np.array=None,
-                num_classes = 2):
+    def __init__(self, Xs: np.array=None, X_masks: np.array=None, Ys: np.array=None,
+                 alpha = 0.5, beta = 0.3, delta = 0.01, epsilon = 0.001, 
+                 gamma = 0.7, M = 1000, N = 1000, theta1=0.05, theta2=0.6, num_classes = 2):
         # α = 0.5, β = 0.3, δ = 0.01, epsilon = 0.001, γ = 0.7, θ1 = 0.05, θ2 = 0.6, M = 1000, N = 1000 on real world dataset
         self.alpha      = alpha
         self.beta       = beta
@@ -119,18 +146,16 @@ class DynFo:
         self.FeatureSet = set()
         self.window = Window(self.N)
 
-        self.weights = [1] * self.M
+        self.weights = list()
         self.acceptedFeatures = []
         self.currentFeatures = set()
         self.learners = []
 
         self.instance_buffer = InstanceBuffer(self.N)
-
         if Xs is not None and X_masks is not None and Ys is not None:
             self.initialUpdate(Xs, X_masks, Ys)
 
     def initialUpdate(self, Xs, X_masks, Ys):
-        
         if len(Xs.shape) == 1:
             Xs = Xs.reshape(1, -1)
             X_masks = X_masks.reshape(1, -1)
@@ -153,12 +178,12 @@ class DynFo:
 
         # Choose 'accepted features' from featureSet for new learner, using the delta parameter
         numFeatures = max(int(self.delta*len(self.FeatureSet)), 1)
-        accepted_features = random.sample(sorted(self.FeatureSet), numFeatures)
+        accepted_features = random.sample(self.FeatureSet, numFeatures)
 
         # Get instances from the instance buffer that has the accepted features, and train a new learner on those instances
+        newLearner = DecisionStump()
         for feature in accepted_features:
             X, Y = self.instance_buffer.get(feature)
-            newLearner = DecisionStump()
             newLearner.fit(X, Y, feature)
 
         # Add new trained Learner to ensemble
@@ -177,9 +202,9 @@ class DynFo:
         accepted_features = random.sample(sorted(self.FeatureSet), numFeatures)
 
         # Get instances from the instance buffer that has the accepted features, and re-train learner on those instances
+        learner = self.learners[i]
         for feature in accepted_features:
             X, Y = self.instance_buffer.get(feature)
-            learner = self.learners[i]
             learner.fit(X, Y, feature)
 
     def dropLearner(self, i):
@@ -193,31 +218,40 @@ class DynFo:
         wc = np.array([0.0] * self.num_classes)
         for learner, weight in zip(self.learners, self.weights):
             if learner.splitDescision() in self.currentFeatures:
-                pred = learner.predict(X)
-                wc[pred] += weight
+                pred, prob = learner.predict(X)
+                wc[pred] += (weight * prob)
+                opp_pred = 1 if pred==0 else 0
+                wc[opp_pred] += (weight*(1-prob))
         
         return np.argmax(wc), max(wc)
 
     def update(self, X, Y):
-
-        for learner, weight in zip(self.learners, self.weights):
-            if learner.splitDescision() not in self.currentFeatures:
-                weight -= self.epsilon
+        for j in range(len(self.weights)):
+            if self.learners[j].splitDescision() not in self.currentFeatures:
+                self.weights[j] -= self.epsilon
             else:
-                i = int(learner.predict(X) == Y)
-                weight = (i*2*self.alpha + weight) / (1 + self.alpha)
+                i = int(self.learners[j].predict(X)[0] == Y)
+                self.weights[j] = (i*2*self.alpha + self.weights[j]) / (1 + self.alpha)
         
-        q2 = np.quantile(self.weights, self.theta2)
-        q1 = np.quantile(self.weights, self.theta1)
-
-        relearnIdx = np.where((q2 > np.array(self.weights)) * (np.array(self.weights) >= q1))[0]
+        q2 = np.quantile(self.weights, self.theta2)        
+        relearnIdx = np.where((self.theta1 <= np.array(self.weights)) * (np.array(self.weights) < q2))[0]
         relearnIdx = random.sample(list(relearnIdx), int((1-self.beta)*len(relearnIdx)))
+        # print("Number of relearns: ", len(relearnIdx))
         for i in relearnIdx:
             self.relearnLearner(i)
+            self.weights[i] = 1
 
-        dropIdx = np.where((q1 > np.array(self.weights)))[0]
-        for i in dropIdx:
-            self.dropLearner(i)
+        dropIdx = np.where((np.array(self.weights) < self.theta1))[0]
+        # print("Number of drops: ", len(dropIdx))
+        for i in range(len(dropIdx)):
+            self.dropLearner(dropIdx[i] - i)
+        # print("Number of learners: ", len(self.weights))
+
+        # if len(dropIdx) != 0:
+        #     self.learners = remove_elements_by_indices(self.learners, dropIdx)
+        #     self.weights = remove_elements_by_indices(self.weights, dropIdx)
+        #     self.acceptedFeatures = remove_elements_by_indices(self.acceptedFeatures, dropIdx)
+        # assert (len(self.weights) == len(self.learners)) and (len(self.acceptedFeatures) == len(self.learners))
 
     def partial_fit(self, X, X_mask, Y):
 

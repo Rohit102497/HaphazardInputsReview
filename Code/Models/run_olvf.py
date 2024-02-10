@@ -7,20 +7,18 @@ import time
 
 def create_param_list(model_params):
     params_list = []
-    if isinstance(model_params['C'], list):
-        for C in model_params['C']:
-            for C_bar in model_params['C_bar']:
-                for B in model_params['B']:
+    for C in model_params['C']:
+        for C_bar in model_params['C_bar']:
+            for B in model_params['B']:
+                for reg in model_params['reg']:
                     params_list.append({'C': C, 'C_bar': C_bar, 'B': B, 
-                            'reg': model_params['reg'], 'n_feat0': model_params['n_feat0']})
-    else:
-        params_list = [model_params]
+                        'reg': reg, 'n_feat0': model_params['n_feat0']})
     return params_list
 
 def run_olvf(X_haphazard, mask, Y, num_runs, model_params):
     result = {}
     params_list = create_param_list(model_params)
-    
+    print("number of runs:", num_runs)
     for i in range(len(params_list)): # Different combination of params
         params = params_list[i]
         eval_list = []

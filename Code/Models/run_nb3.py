@@ -27,8 +27,12 @@ def run_nb3(X, X_haphazard, Y, numTopFeats_percent, num_runs):
                 Y_logits.append(y_logits[1])
             taken_time = time.time() - start_time
             del model
-
+            # Remove Nan values from logits if any with the actual pred value
+            nan_list = np.where(np.isnan(Y_logits))[0]
+            for k in range(len(nan_list)):
+                Y_logits[nan_list[k]] = Y_pred[nan_list[k]]
+            print(Y.shape, np.array(Y_pred).reshape(-1, 1).shape, np.array(Y_logits).reshape(-1, 1).shape)
             eval_list.append(get_all_metrics(Y, np.array(Y_pred).reshape(-1, 1), np.array(Y_logits).reshape(-1, 1), taken_time))
-        result[numTopFeats] = eval_list
+        result[numTopFeats_percent[i]] = eval_list
     # The structure of results: It is dictionary with key being the number of features and value are the metrics.
     return result

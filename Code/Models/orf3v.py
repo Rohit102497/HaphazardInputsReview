@@ -29,8 +29,7 @@ class FeatStats:
         self.maxValue = None
         self.classCounts = {i:0.0 for i in range(numClasses)}
 
-        if( (x is not None) and (y is not None) ):
-            self.update(x, y)
+        self.update(x, y)
 
     def update(self, x=None, y=None):
         if( (x is not None) and (y is not None) ):
@@ -54,14 +53,20 @@ class Stump:
     def __init__(self, minValue, maxValue, digestPerClass, classCounts):
         self.age=0
         self.threshold = minValue + random.random() * (maxValue - minValue)
+        # print(f"min: {minValue:<10} | max: {maxValue:<10} | thresh: {self.threshold:<10}")
         self.gini, self.classDistAbove, self.classDistBelow = self.calcApproxGini(digestPerClass, classCounts)
+        
+        if all(prob == 0.0 for prob in self.classDistAbove.values()):
+            self.classDistAbove = {key:1.0/len(self.classDistAbove) for key in self.classDistAbove}
+        
+        if all(prob == 0.0 for prob in self.classDistBelow.values()):
+            self.classDistBelow = {key:1.0/len(self.classDistBelow) for key in self.classDistBelow}
 
     def calcApproxGini(self, digestPerClass, classCounts):
 
         totalCount = 0.0
         for count in classCounts:
             totalCount += count
-        
         
         classDistBelow = dict()
         classDistAbove = dict()
@@ -75,10 +80,12 @@ class Stump:
             countAbove += classDistAbove[Class] * classCounts[Class] #NA
         
         normalizedClassDistBelow, normalizedClassDistAbove = dict(), dict()
-        epsilon = np.finfo(float).eps
+        # epsilon = np.finfo(float).eps
         for Class in classCounts:
-            normalizedClassDistBelow[Class] = classDistBelow[Class] * classCounts[Class] / (countBelow+epsilon) # P(fi<Xj | C) * (Nc) / NB
-            normalizedClassDistAbove[Class] = classDistAbove[Class] * classCounts[Class] / (countAbove+epsilon) # P(fi>Xj | C) * (Nc) / NA
+            normalizedClassDistBelow[Class] = classDistBelow[Class] * classCounts[Class] / (countBelow)\
+                                                 if countBelow != 0.0 else 0.0 # P(fi<Xj | C) * (Nc) / NB
+            normalizedClassDistAbove[Class] = classDistAbove[Class] * classCounts[Class] / (countAbove)\
+                                                 if countAbove != 0.0 else 0.0 # P(fi>Xj | C) * (Nc) / NA
         
         giniBelow, giniAbove = 0.0, 0.0
         for Class in classCounts:
@@ -105,23 +112,26 @@ class FeatureForest:
         self.decisionStumps = [Stump(minValue      =featStats.minValue,
                                       maxValue      =featStats.maxValue,
                                       digestPerClass=featStats.digestPerClass,
-                                      classCounts   =featStats.classCounts)] * n
+                                      classCounts   =featStats.classCounts) for _ in range(n)]
+        self.weights = [1.0 - random.random()/10000.0 for _ in range(n)] # line #369 from original paper code
 
     def predict(self, x):
         distAggregate = np.array([0.0]*self.numClasses)
-        for stump in self.decisionStumps:
+        for stump, weight in zip(self.decisionStumps, self.weights):
             predDist = stump.predict(x)
             predDist = {key:predDist[key] for key in sorted(predDist)}
             predDist = np.array(list(predDist.values()))
-            distAggregate += predDist
-        
-        return np.argmax(distAggregate), max(distAggregate)
+            distAggregate += (predDist*weight)
+        total_weight = np.sum(distAggregate)
+        if total_weight > 0:
+            distAggregate = distAggregate/total_weight
+
+        return distAggregate
 
 
 class ORF3V:
-    def __init__(self, forestSize=200, replacementInterval=50, replacementChance=0.3, 
-                windowSize = 200, updateStrategy = "oldest", alpha = 0.1, delta = 0.001, 
-                Xs: np.array=None, X_masks: np.array=None, Ys: np.array=None, numClasses = 2):
+    def __init__(self, Xs, X_masks, Ys, forestSize=200, replacementInterval=50, replacementChance=0.3, windowSize = 200, 
+                updateStrategy = "oldest", alpha = 0.1, delta = 0.001, numClasses = 2):
 
         self.forestSize = forestSize
         self.replacementInterval = replacementInterval
@@ -133,10 +143,12 @@ class ORF3V:
         self.numClasses = numClasses
 
         self.counter = 0
-        self.featStats = dict()
         self.firstOccurance = dict()
-        self.currentFeatures = list()
+
+        self.currentFeatures = set()
         self.featureSet = set()
+
+        self.featStats = dict()
         self.featureForest = dict()
         self.weights = dict()
 
@@ -149,20 +161,35 @@ class ORF3V:
             Xs = Xs.reshape(1, -1)
             X_masks = X_masks.reshape(1, -1)
             Ys = Ys.reshape(1, -1)
+
+        # generate featStats
         for x, x_mask, y in zip(Xs, X_masks, Ys):
-            self.update(x, x_mask, y)
+            features = set(np.where(x_mask)[0])
+            self.featureSet.update(features)
+            for feature in features:
+                if self.featStats.get(feature, None) is None:
+                    self.featStats[feature] = FeatStats(self.windowSize, x[feature], y)
+                else:
+                    self.featStats[feature].update(x[feature], y)
+        
+        # generate featureForests and initalize weights
+        for feature in self.featureSet:
+            self.firstOccurance[feature] = 0
+            self.featureForest[feature] = FeatureForest(self.forestSize, feature,
+                                                        self.featStats[feature], self.numClasses)
+            self.weights[feature] = 1.0
 
     def predict(self, X, X_mask):
-        self.currentFeatures = np.where(X_mask)[0]
+        self.currentFeatures = set(np.where(X_mask)[0])
         classProbs = np.array([0.0] * self.numClasses)
         for feature in self.currentFeatures:
             if feature in self.featureSet:
                 ff = self.featureForest[feature]
                 weight = self.weights[feature]
 
-                classProbs += weight * ff.predict(X[feature])
+                classProbs += (weight * ff.predict(X[feature]))
         
-        return np.argmax(classProbs), max(classProbs)
+        return np.argmax(classProbs), classProbs[1]
 
     def update(self, X, X_mask, Y):
 
@@ -179,6 +206,7 @@ class ORF3V:
         self.currentFeatures = set(np.where(X_mask)[0])
         # Feature present in current instance but not in FeatureSet
         newFeatures = self.currentFeatures.difference(self.featureSet)
+        # print("New features: ", ne wFeatures)
         # Update featureSet
         self.featureSet.update(newFeatures)
 
@@ -211,18 +239,23 @@ class ORF3V:
     
     def pruneForests(self):
         if (self.counter > self.windowSize) and (self.counter%self.replacementInterval == 0):
+            pruned_feature = []
             for feature, featStats in self.featStats.items():
-                
+                # print("First Occurance: ", self.firstOccurance)
                 if featStats.seenInstances > self.windowSize:
-
                     totalMean = (featStats.seenInstances)/(self.counter-self.firstOccurance[feature])
                     windowMean = featStats.slidingWindow.mean()
                     if totalMean-windowMean > self.hb:
-                        self.prune(feature)
+                        # self.prune(feature)
+                        pruned_feature.append(feature)
+            for feature in pruned_feature:
+                self.prune(feature)
         return
 
     def prune(self, feature):
-        del self.featureForest[feature], self.weights[feature], self.firstOccurance[feature], self.featureSet[feature]
+        # print("Pruned feature:", feature)
+        del self.featureForest[feature], self.weights[feature], self.firstOccurance[feature], self.featStats[feature]
+        self.featureSet.remove(feature)
         return  
 
     def generateForest(self, newFeatures, X, Y):
@@ -231,14 +264,16 @@ class ORF3V:
                 self.firstOccurance[feature] = self.counter
                 self.weights[feature] = 1.0
                 self.featStats[feature] = FeatStats(self.windowSize, X[feature], Y, self.numClasses)
-                self.featureForest[feature] = FeatureForest(self.forestSize, feature, self.featStats[feature], self.numClasses)
+                self.featureForest[feature] = FeatureForest(self.forestSize, feature,
+                                                            self.featStats[feature], self.numClasses)
         
         return
     
     def updateWeights(self, X, Y):
         for feature in self.currentFeatures:
             if feature in self.featureForest:
-                predClass, _ = self.featureForest[feature].predict(X[feature])
+                predDist = self.featureForest[feature].predict(X[feature])
+                predClass = np.argmax(predDist)
                 self.weights[feature] = (2*self.alpha*(predClass == Y) + self.weights[feature])/(1+self.alpha)
         return
 
@@ -259,23 +294,27 @@ class ORF3V:
         return
     
     def replaceOldestStump(self):
+        ageloss = 0.0001*float(self.replacementInterval)
         for feature, ff in self.featureForest.items():
-            oldestAge, oldestIdx = 0, -1
-            for i, stump in enumerate(ff.decisionStumps):
-                if(stump.age > oldestAge):
-                    oldestAge = stump.age
+            
+            for i, weight in enumerate(ff.weights):
+                ff.weights[i] = weight*ageloss
+            
+            oldestWeight, oldestIdx = 10.0, -1
+            for i, weight in enumerate(ff.weights):
+                if(weight > oldestWeight):
+                    oldestWeight = weight
                     oldestIdx = i
             
             ff.decisionStumps[oldestIdx] = Stump(minValue      =self.featStats[feature].minValue,
                                                  maxValue      =self.featStats[feature].maxValue,
                                                  digestPerClass=self.featStats[feature].digestPerClass,
                                                  classCounts   =self.featStats[feature].classCounts)
+            ff.weights[oldestIdx] = 1.0
 
     def partial_fit(self, X, X_mask, Y):
 
         Y_pred, Y_logit = self.predict(X, X_mask)
-
-        self.counter += 1
         self.update(X, X_mask, Y)
 
         return Y_pred, Y_logit

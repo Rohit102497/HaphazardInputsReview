@@ -10,10 +10,12 @@ class FeatureSpaceClassifier:
         self.C_bar = C_bar
         self.B = B
         self.w_bar = np.zeros(n_feat0, dtype=float)
+        # self.w_bar = np.random.uniform(0, 1, n_feat0)
     
     # predict projection confidences
-    def predict(self, X_mask):
-        R_w = np.ones_like(self.w_bar)
+    def predict(self, X_mask, seen_feature):
+        R_w = np.zeros_like(self.w_bar)
+        R_w[seen_feature] = 1.0
         R_x = X_mask
         Pw = sigmoid(np.dot(R_w, self.w_bar))
         Px = sigmoid(np.dot(R_x, self.w_bar))
@@ -22,33 +24,36 @@ class FeatureSpaceClassifier:
     
     # loss function for feature space classifier
     def loss(self, shared, new, Y, Y_pred, X_mask):
+        if Y == -1:
+            Y = 0
         I = float(int(Y) == int(Y_pred))
 
-        ws = self.w_bar[shared]
-        wn = self.w_bar[new]
+        exp1 = 1
+        exp2 = 1
+        if len(shared) != 0:
+            ws = self.w_bar[shared]
+            R_xs = X_mask[shared]
+            exp1 = np.exp(-I * np.dot(ws, R_xs))
+        if len(new) != 0:
+            wn = self.w_bar[new]
+            R_xn = X_mask[new]
+            exp2 = np.exp(-I * np.dot(wn, R_xn))
 
-        R_xs = X_mask[shared]
-        R_xn = X_mask[new]
-
-        exp1 = np.exp(-I * np.dot(ws, R_xs))
-        exp2 = np.exp(-I * np.dot(wn, R_xn))
-
-        l =  (1 - (exp1 * exp2))
-
-        dl_dws = -1.0 * (np.log(exp1*exp2) / np.log(1 + exp1*exp2)) * I * R_xs
-        dl_dwn = -1.0 * (np.log(exp1*exp2) / np.log(1 + exp1*exp2)) * I * R_xn
-
-        d_w_bar = np.zeros_like(self.w_bar)
-        d_w_bar[shared] = dl_dws
-        d_w_bar[new] = dl_dwn
+        l =  np.log(1 + (exp1 * exp2))
+        d_w_bar = np.zeros_like(self.w_bar) 
+        if len(shared) != 0:
+            d_w_bar[shared] = -1.0 * (np.log(exp1*exp2) / np.log(1 + exp1*exp2)) * I * R_xs
+        if len(new) != 0:
+            d_w_bar[new] = -1.0 * (np.log(exp1*exp2) / np.log(1 + exp1*exp2)) * I * R_xn
 
         return l, d_w_bar
     
     # Update parameters
     def update_params(self, shared, new, tau, d_w_bar):
-        # self.w_bar[existing] = self.w_bar[existing]
-        self.w_bar[shared] = self.w_bar[shared] + tau * d_w_bar[shared]
-        self.w_bar[new] = - tau * d_w_bar[new]
+        if len(shared) != 0:
+            self.w_bar[shared] = self.w_bar[shared] + tau * d_w_bar[shared]
+        if len(new) != 0:
+            self.w_bar[new] = - tau * d_w_bar[new]
         return
     
     # Calculate loss and update weights
@@ -64,49 +69,63 @@ class FeatureSpaceClassifier:
         return
     
     # Sparcity step
-    def sparcify(self):
-        # truncate the min element by B
-        min_idx = np.argmin(self.w_bar)
-        self.w_bar[min_idx] *= self.B
+    def sparcify(self, seen_features):
+        remaining_feat_no = max(1, int(np.floor(self.B*len(seen_features))))
+        if len(seen_features) > remaining_feat_no:
+            idx_to_keep = np.argsort(self.w_bar[seen_features])[:-remaining_feat_no]
+            m = np.zeros_like(self.w_bar[seen_features], dtype=float)
+            m[idx_to_keep] = 1.0
+            self.w_bar[seen_features] *= m
 
 class InstanceClassifier:
     def __init__(self, C, B, reg, n_feat0):
         self.C = C
         self.B = B
         self.reg = reg
+        # self.w = np.random.uniform(0, 1, n_feat0)
         self.w = np.zeros(n_feat0)
     
     # predict output from shared feature space
     def predict(self, shared, X):
-        xs, ws = X[shared], self.w[shared]
-
-        y_logit = np.dot(xs, ws)
+        if len(shared) == 0: # There is nothing to predict on
+            y_logit = np.random.normal(0, 1)
+        else:
+            xs, ws = X[shared], self.w[shared]
+            y_logit = np.dot(xs, ws)
         y_pred =  float(y_logit>0)
-
         y_logit = abs(y_logit)
         return y_pred, y_logit
     
     # modified hinge loss for instance classifier
     def loss(self, shared, new, X, Y):
 
-        ws = self.w[shared]
-        xs = X[shared]
-
-        wn = self.w[new]
-        xn = X[new]
-
-        ds = np.dot(xs, ws)
-        dn = np.dot(xn, wn)
+        if len(shared) != 0:
+            ws = self.w[shared]
+            xs = X[shared]
+            ds = np.dot(xs, ws)
+        if len(new) != 0:
+            wn = self.w[new]
+            xn = X[new]
+            dn = np.dot(xn, wn)
 
         y = -1 if Y == 0 else Y
 
+        if len(shared) == 0:
+            return max(0, 1 - y*dn)
+        if len(new) == 0:
+            return max(0, 1 - y*ds)
         return max(0, 1 - y*ds - y*dn)
 
     # Update parameters
     def update_params(self, shared, new, X, Y, Pw, Px, tau):
 
-        self.w[shared] = self.w[shared] + Pw * tau * Y * X[shared]
-        self.w[new] = - Px * tau * Y * X[new]
+        # print("w shared: ", self.w[shared], "Pw:", Pw, "tau:", tau, "Y:", Y, "x_shared:", X[shared])
+        if len(shared) != 0:
+            self.w[shared] = self.w[shared] + Pw * tau * Y * X[shared]
+        if len(new) != 0:
+            self.w[new] = Px * tau * Y * X[new]
+
+        # print("updated w: ", self.w)
         return
 
     # Partial Update step
@@ -114,23 +133,27 @@ class InstanceClassifier:
 
         l = self.loss(shared, new, X, Y)
 
-        tau = -1.0 * l / (np.linalg.norm(X)**2 + eps)
+        # In the paper this term is multiple below term is multiplied by -1. However, that does not make sense.
+        # Because then the next term "tau = min(self.C, tau)" would always be tau and not self.C since tau is a negative value
+        tau = l / (np.linalg.norm(X)**2 + eps) 
         tau = min(self.C, tau)
 
         self.update_params(shared, new, X, Y, Pw, Px, tau)
         return
 
     # Sparcity step
-    def sparcify(self, w_bar):
-        
+    def sparcify(self, w_bar, seen_features):
         factor = self.reg / (np.dot(w_bar, self.w) + eps)
         factor = min(1, factor)
 
         self.w *= factor
 
-        # truncate the min element by B
-        min_idx = np.argmin(self.w)
-        self.w[min_idx] *= self.B
+        remaining_feat_no = max(1, int(np.floor(self.B*len(seen_features))))
+        if len(seen_features) > remaining_feat_no:
+            idx_to_keep = np.argsort(self.w[seen_features])[:-remaining_feat_no]
+            m = np.zeros_like(self.w[seen_features], dtype=float)
+            m[idx_to_keep] = 1.0
+            self.w[seen_features] *= m
 
 class OLVF:
     def __init__(self, C, C_bar, B, reg, n_feat0):
@@ -160,21 +183,24 @@ class OLVF:
 
     def update(self, X, X_mask, Y, Y_pred):
 
-        # 1. Get feature space confidences
-        Pw, Px = self.featureSpaceClassifier.predict(X_mask)
+        # 1. Update FeatureSpace classifier
 
-        # 2. Update FeatureSpace classifier
         self.featureSpaceClassifier.update(list(self.sharedFeatures), list(self.newFeatures), X_mask, Y, Y_pred)
+
+        # 2. Get feature space confidences
+        Pw, Px = self.featureSpaceClassifier.predict(X_mask, list(self.featureSet))
 
         # 3. Update InstanceClassifier using projection confidences
         self.instanceClassifier.update(list(self.sharedFeatures), list(self.newFeatures), X, Y, Pw, Px)
 
         # 4. Sparcity step for FeatureSpace classifier and Instance classifier
-        self.featureSpaceClassifier.sparcify()
-        self.instanceClassifier.sparcify(self.featureSpaceClassifier.w_bar)
+        self.instanceClassifier.sparcify(self.featureSpaceClassifier.w_bar, list(self.featureSet))
+        self.featureSpaceClassifier.sparcify(list(self.featureSet))
+        
 
     def partial_fit(self, X, X_mask, Y):
-
+        if Y == 0:
+            Y = -1
         y_pred, y_logit = self.predict(X, X_mask)
 
         self.update(X, X_mask, Y, y_pred)

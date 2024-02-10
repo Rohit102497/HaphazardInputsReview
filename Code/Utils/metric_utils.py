@@ -11,7 +11,10 @@ def Accuracy(y_actual, y_pred): # Two arrays: actual label and prediction
 
 # auroc
 def AUROC(y_actual, pred_logits):
-    return roc_auc_score(y_actual, pred_logits)*100
+    if np.sum(np.isnan(pred_logits)) == 0:
+        return roc_auc_score(y_actual, pred_logits)*100
+    else:
+        return np.nan
 
 # Balanced Accuracy
 def BalancedAccuracy(y_actual, y_pred):
@@ -19,8 +22,11 @@ def BalancedAccuracy(y_actual, y_pred):
 
 # AUPRC
 def AUPRC(y_actual, pred_logits):
-    precision_val, recall_val, _ = precision_recall_curve(y_actual, pred_logits)
-    return auc(recall_val, precision_val)*100
+    if np.sum(np.isnan(pred_logits)) == 0:
+        precision_val, recall_val, _ = precision_recall_curve(y_actual, pred_logits)
+        return auc(recall_val, precision_val)*100
+    else:
+        return np.nan
 
 def get_all_metrics(Y_true, Y_pred, Y_logits, time_taken):
     num_errors = NumberOfErrors(Y_true, Y_pred)

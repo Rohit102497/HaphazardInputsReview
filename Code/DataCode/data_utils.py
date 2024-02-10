@@ -1,10 +1,9 @@
 # Libraries required
 import numpy as np
 import pandas as pd
-import os
+# import os
 import pickle
-
-import sys
+# import sys
 
 def data_folder_path(data_folder, data_name):
     storage_folder =  "/data/"
@@ -153,8 +152,8 @@ def data_load_german(data_folder):
         data_initial.iloc[i,3] = int(data_initial.iloc[i,3].split(" ")[1])
     data = data_initial.sample(frac = 1)
 
-    Y = np.array(data.iloc[:,:1])
-    X = np.array(data.iloc[:,1:])
+    Y = np.array(data.iloc[:,:1], dtype = float)
+    X = np.array(data.iloc[:,1:], dtype = float)
 
     return X, Y
 
@@ -220,8 +219,8 @@ def data_load_krvskp(data_folder):
     data_initial.insert(0, column="class", value=label)
     data = data_initial.sample(frac = 1)
 
-    Y = np.array(data.iloc[:,:1])
-    X = np.array(data.iloc[:,1:])
+    Y = np.array(data.iloc[:,:1], dtype = float)
+    X = np.array(data.iloc[:,1:], dtype = float)
 
     return X, Y
 
@@ -381,7 +380,55 @@ def data_load_imdb(data_folder):
     label = np.array(data_initial[:,0] >= 7)*1
     data_initial = data_initial[:,1:]
     
-    Y = label
+    Y = label.reshape(label.shape[0], 1)
     X = data_initial
+
+    return X, Y
+
+def data_load_spamassasin(data_folder):
+    data_name = "spamassasin.pickle"
+    data_path = data_folder_path(data_folder, data_name)
+    # To load the file
+    with open(data_path, 'rb') as handle:
+        data_initial = pickle.load(handle)
+
+    data_initial = data_initial.astype(float)
+    # Substitute each position containing -1 with nan value
+    data_initial[data_initial == -1] = np.nan
+    
+    Y = data_initial[:,0:1]
+    X = data_initial[:, 1:]
+
+    return X, Y
+
+def data_load_crowdsense_c3(data_folder):
+    data_name = "crowdsense_c3.pickle"
+    data_path = data_folder_path(data_folder, data_name)
+    # To load the file
+    with open(data_path, 'rb') as handle:
+        data_initial = pickle.load(handle)
+
+    data_initial = data_initial.astype(float)
+    # Substitute each position containing -1 with nan value
+    data_initial[data_initial == -1] = np.nan
+    
+    Y = data_initial[:,0:1]
+    X = data_initial[:, 1:]
+
+    return X, Y
+
+def data_load_crowdsense_c5(data_folder):
+    data_name = "crowdsense_c5.pickle"
+    data_path = data_folder_path(data_folder, data_name)
+    # To load the file
+    with open(data_path, 'rb') as handle:
+        data_initial = pickle.load(handle)
+
+    data_initial = data_initial.astype(float)
+    # Substitute each position containing -1 with nan value
+    data_initial[data_initial == -1] = np.nan
+    
+    Y = data_initial[:,0:1]
+    X = data_initial[:, 1:]
 
     return X, Y

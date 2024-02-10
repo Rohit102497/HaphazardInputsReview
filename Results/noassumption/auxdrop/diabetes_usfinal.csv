@@ -1,0 +1,3 @@
+,Num. Errors,Accuracy,AUROC,AUPRC,Bal. Accuracy,Time
+"{'max_num_hidden_layers': 6, 'qtd_neuron_per_hidden_layer': 50, 'b': 0.99, 's': 0.2, 'n': 0.01, 'dropout_p': 0.3, 'use_cuda': False, 'n_aux_feat': 47, 'batch_size': 1, 'n_classes': 2, 'n_neuron_aux_layer': 200}",11358.00(1.41),88.84(0.00),49.86(0.15),11.06(0.05),50.00(0.00),558.87(3.20)
+"{'max_num_hidden_layers': 6, 'qtd_neuron_per_hidden_layer': 50, 'b': 0.99, 's': 0.2, 'n': 0.05, 'dropout_p': 0.3, 'use_cuda': False, 'n_aux_feat': 47, 'batch_size': 1, 'n_classes': 2, 'n_neuron_aux_layer': 200}",11357.60(0.89),88.84(0.00),50.04(0.26),11.10(0.08),50.00(0.00),567.92(3.34)

@@ -1,0 +1,2 @@
+,Num. Errors,Accuracy,AUROC,AUPRC,Bal. Accuracy,Time
+"{'C': 0.01, 'C_bar': 0.0001, 'B': 1, 'reg': 0.0001, 'n_feat0': 57}",1605.00,65.12,57.59,50.04,59.80,0.65

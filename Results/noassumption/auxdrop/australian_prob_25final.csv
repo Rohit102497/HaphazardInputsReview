@@ -1,0 +1,2 @@
+,Num. Errors,Accuracy,AUROC,AUPRC,Bal. Accuracy,Time
+"{'max_num_hidden_layers': 6, 'qtd_neuron_per_hidden_layer': 50, 'b': 0.99, 's': 0.2, 'n': 0.005, 'dropout_p': 0.5, 'use_cuda': False, 'n_aux_feat': 14, 'batch_size': 1, 'n_classes': 2, 'n_neuron_aux_layer': 100}",320.80(18.47),53.51(2.68),50.59(3.71),47.15(2.48),51.51(2.00),3.63(0.01)

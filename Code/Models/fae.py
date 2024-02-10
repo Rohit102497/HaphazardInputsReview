@@ -48,7 +48,7 @@ class ACC_Q:
 
 
 class LEARNER:
-    def __init__(self, Document=None, DocClass=None, Features=[], N=50):
+    def __init__(self, Document=None, DocClass=None, Features=[], N=50, data_name = None):
         
         self.Nc = np.array([0.0, 0.0]) # Number of documents corresponding to each class
         
@@ -71,6 +71,7 @@ class LEARNER:
         self.Accuracy = 0
         self.age = 0
         self.probation = 0
+        self.data_name = data_name
 
         if (Document is not None and DocClass is not None):
             self.Accuracy = 1 # If pre-trained, accuracy considered to be 100% till that instant
@@ -81,7 +82,11 @@ class LEARNER:
         if len(self.P) != 0:
             for Word in Document:
                 if Word in self.Vocabulary:
-                    scores *= self.P[Word]*Document[Word]
+                    div = 1.0
+                    if self.data_name in ['crowdsense_c3', 'crowdsense_c5']:
+                        div = 1000.0
+                    # For crowdsense data the scores shoots up to infinity. To curtail that we divide the input values by 1000.
+                    scores *= self.P[Word]*(Document[Word]/div)
 
         return scores
     
@@ -123,7 +128,7 @@ class LEARNER:
 
 class FAE:
 
-    def __init__(self, m=5, p=3, f=0.15, r=10, N=50, M=250, Document=None, DocClass=None):
+    def __init__(self, m=5, p=3, f=0.15, r=10, N=50, M=250, data_name = None, Document=None, DocClass=None):
         
         # Initialize parameters
         self.m = m # (maturity) Number of instances needed before a learner’s classifications are used by the ensemble
@@ -154,13 +159,15 @@ class FAE:
         self.acc = ACC_Q(self.N)
         self.probation = np.array([])
         self.age = np.array([])
+        self.data_name = data_name
 
         # Initialize the first learner
         if(Document is not None and DocClass is not None):
             self.InitialTraining(Document, DocClass)
-            self.learners = [LEARNER(Document=Document, DocClass=DocClass, Features=self.TopMFeatures, N=self.N)]
+            self.learners = [LEARNER(Document=Document, DocClass=DocClass, Features=self.TopMFeatures,
+                                      N=self.N, data_name = self.data_name)]
         else:
-            self.learners = [LEARNER(Features=self.TopMFeatures, N=self.N)]
+            self.learners = [LEARNER(Features=self.TopMFeatures, N=self.N, data_name = self.data_name)]
         
         self.threshold = self.get_threshold()
     
@@ -238,7 +245,7 @@ class FAE:
                 self.learners.pop(i)
         
         # Create new learner on current instance
-        self.learners.append(LEARNER(Document=Document, DocClass=DocClass, Features=self.TopMFeatures))
+        self.learners.append(LEARNER(Document=Document, DocClass=DocClass, Features=self.TopMFeatures, data_name=self.data_name))
 
     def UpdateFeatureSet(self, Document):
         # Update Vocabulary and Initiate WordStats for new words.
