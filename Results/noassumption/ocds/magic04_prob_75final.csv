@@ -1,2 +1,0 @@
-,Num. Errors,Accuracy,AUROC,AUPRC,Bal. Accuracy,Time
-"{'T': 16, 'gamma': 1, 'alpha': 0.01, 'beta0': 0.01, 'beta1': 0.0001, 'beta2': 0.0001}",8591.00(406.63),54.83(2.14),55.90(1.74),67.60(1.39),53.76(1.07),3.20(0.00)

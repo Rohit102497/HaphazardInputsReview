@@ -1,2 +1,0 @@
-,Num. Errors,Accuracy,AUROC,AUPRC,Bal. Accuracy,Time
-"{'alpha': 0.5, 'beta': 0.5, 'delta': 0.001, 'epsilon': 0.01, 'gamma': 0.5, 'M': 500, 'theta1': 0.05, 'theta2': 0.75, 'N': 20}",304.80(2.39),68.18(0.25),47.37(0.48),70.16(0.38),50.58(0.27),29.36(0.48)

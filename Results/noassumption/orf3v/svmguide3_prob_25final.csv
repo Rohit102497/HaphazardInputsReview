@@ -1,2 +1,0 @@
-,Num. Errors,Accuracy,AUROC,AUPRC,Bal. Accuracy,Time
-"{'forestSize': 5, 'replacementInterval': 10, 'replacementChance': 0.7, 'windowSize': 20, 'updateStrategy': 'random', 'alpha': 0.3, 'delta': 0.001}",338.60(2.97),72.74(0.24),48.06(0.14),75.08(0.12),49.54(0.43),4.17(0.06)
