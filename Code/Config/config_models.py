@@ -583,6 +583,3 @@ def config_auxdrop(if_auxdrop_no_assumption_arch_change, X, data_name,
         config_dict["aux_layer"] = aux_layer
         config_dict["n_aux_feat"] = n_aux_feat
         return config_dict, X_base, X_aux_new, aux_mask
-    
-
-
