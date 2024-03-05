@@ -6,7 +6,7 @@ import pickle
 # import sys
 
 def data_folder_path(data_folder, data_name):
-    storage_folder =  "/data/"
+    storage_folder = "/data/"
     return storage_folder + data_folder + "/" + data_name
 
 # Load wpbc data
