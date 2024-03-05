@@ -18,20 +18,20 @@ def config_nb3(data_name):
         'australian':   {"numTopFeats_percent":[0.8]},
         'wbc':          {"numTopFeats_percent":[0.2]},
         'diabetes_f':   {"numTopFeats_percent":[1]},
-        'crowdsense_c3':{"numTopFeats_percent":[0.6]},
-        'crowdsense_c5':{"numTopFeats_percent":[0.8]},
         'german':       {"numTopFeats_percent":[1]},
         'ipd':          {"numTopFeats_percent":[0.6]},
         'svmguide3':    {"numTopFeats_percent":[0.2]},
         'krvskp':       {"numTopFeats_percent":[1]},
         'spambase':     {"numTopFeats_percent":[1]},
-        'spamassasin':  {"numTopFeats_percent":[0.2]},
         'magic04':      {"numTopFeats_percent":[0.6]},
-        'imdb':         {"numTopFeats_percent":[0.4]},
         'a8a':          {"numTopFeats_percent":[0.2]},
-        'diabetes_us':  {"numTopFeats_percent":[0.8]},
         'susy':         {"numTopFeats_percent":[1]},
-        'higgs':        {"numTopFeats_percent":[0.2]},        
+        'higgs':        {"numTopFeats_percent":[0.2]},
+        'diabetes_us':  {"numTopFeats_percent":[0.8]},
+        'spamassasin':  {"numTopFeats_percent":[0.2]},
+        'imdb':         {"numTopFeats_percent":[0.4]},
+        'crowdsense_c3':{"numTopFeats_percent":[0.6]},
+        'crowdsense_c5':{"numTopFeats_percent":[0.8]},
     }
     
     n_runs = 1 # NB3 is a deterministic model. So, everytime, it will produce same result for the same data. So, the num_runs is kept 1.
@@ -57,20 +57,20 @@ def config_fae(data_name):
         'australian':   {"numTopFeats_percent":[1]},
         'wbc':          {"numTopFeats_percent":[0.8]},
         'diabetes_f':   {"numTopFeats_percent":[1]},
-        'crowdsense_c3':{"numTopFeats_percent":[0.2]},
-        'crowdsense_c5':{"numTopFeats_percent":[0.8]},
         'german':       {"numTopFeats_percent":[0.2]},
         'ipd':          {"numTopFeats_percent":[0.8]},
         'svmguide3':    {"numTopFeats_percent":[0.4]},
         'krvskp':       {"numTopFeats_percent":[1]},
         'spambase':     {"numTopFeats_percent":[0.2]},
-        'spamassasin':  {"numTopFeats_percent":[0.2]},
         'magic04':      {"numTopFeats_percent":[1]},
-        'imdb':         {"numTopFeats_percent":[0.8]},
         'a8a':          {"numTopFeats_percent":[0.2]},
-        'diabetes_us':  {"numTopFeats_percent":[0.4]},
         'susy':         {"numTopFeats_percent":[0.6]},
-        'higgs':        {"numTopFeats_percent":[0.4]},   
+        'higgs':        {"numTopFeats_percent":[0.4]},
+        'diabetes_us':  {"numTopFeats_percent":[0.4]},
+        'spamassasin':  {"numTopFeats_percent":[0.2]},
+        'imdb':         {"numTopFeats_percent":[0.8]},
+        'crowdsense_c3':{"numTopFeats_percent":[0.2]},
+        'crowdsense_c5':{"numTopFeats_percent":[0.8]},
     }
     # M = [.2, .4, .6, .8, 1]  # Number of features (here in proportion) selected by the feature selection algorithm for a newly created learner
     # if data_name == "higgs":
@@ -104,20 +104,20 @@ def config_olvf(data_name, num_feat):
         'australian':   {'B':[1],       'C':[0.01],        'C_bar':[0.0001],   'reg':[0.0001]},
         'wbc':          {'B':[1],       'C':[0.01],        'C_bar':[0.0001],   'reg':[0.0001]},
         'diabetes_f':   {'B':[0.3],     'C':[0.01],        'C_bar':[0.0001],   'reg':[0.0001]},
-        'crowdsense_c3':{'B':[1],       'C':[0.0001],      'C_bar':[0.0001],   'reg':[0.0001]},
-        'crowdsense_c5':{'B':[1],       'C':[0.0001],      'C_bar':[0.0001],   'reg':[0.0001]},
         'german':       {'B':[0.01],    'C':[0.01],        'C_bar':[0.0001],   'reg':[0.0001]},
         'ipd':          {'B':[1],       'C':[1],           'C_bar':[0.01],     'reg':[0.0001]},
         'svmguide3':    {'B':[1],       'C':[1],           'C_bar':[1],        'reg':[0.0001]},
         'krvskp':       {'B':[1],       'C':[1],           'C_bar':[1],        'reg':[0.0001]},
         'spambase':     {'B':[1],       'C':[0.01],        'C_bar':[0.0001],   'reg':[0.0001]},
-        'spamassasin':  {'B':[1],       'C':[1],           'C_bar':[0.0001],   'reg':[0.0001]},
         'magic04':      {'B':[1],       'C':[0.0001],      'C_bar':[0.0001],   'reg':[0.0001]},
         'imdb':         {'B':[1],       'C':[0.01],        'C_bar':[0.0001],   'reg':[0.0001]},
         'a8a':          {'B':[1],       'C':[1],           'C_bar':[0.0001],   'reg':[0.0001]},
-        'diabetes_us':  {'B':[1],       'C':[0.0001],      'C_bar':[0.0001],   'reg':[0.0001]},
+        'crowdsense_c3':{'B':[1],       'C':[0.0001],      'C_bar':[0.0001],   'reg':[0.0001]},
+        'crowdsense_c5':{'B':[1],       'C':[0.0001],      'C_bar':[0.0001],   'reg':[0.0001]},
         'susy':         {'B':[1],       'C':[0.01],        'C_bar':[0.01],     'reg':[0.0001]},
         'higgs':        {'B':[1],       'C':[0.01],        'C_bar':[0.0001],   'reg':[0.0001]},
+        'diabetes_us':  {'B':[1],       'C':[0.0001],      'C_bar':[0.0001],   'reg':[0.0001]},
+        'spamassasin':  {'B':[1],       'C':[1],           'C_bar':[0.0001],   'reg':[0.0001]},
     }
     # data_list_hyper = ['wbc', 'svmguide3', 'wpbc', 'ionosphere', 'magic04', 'german',
     #                     'spambase', 'wdbc', 'a8a']
@@ -155,6 +155,10 @@ def config_ocds(num_feat, data_name):
                         'beta1': [1], 'beta2':[0.01]},
         'diabetes_f':   {'T':[8], 'alpha':[0.0001], 'gamma':gamma, 'beta0':[0.01], 
                         'beta1': [0.0001], 'beta2':[0.0001]},
+        'crowdsense_c3':{'T':[8], 'alpha':[0.0001], 'gamma':gamma, 'beta0':[0.01], 
+                        'beta1': [0.0001], 'beta2':[0.01]},
+        'crowdsense_c5':{'T':[8], 'alpha':[0.01], 'gamma':gamma, 'beta0':[0.01], 
+                        'beta1': [0.01], 'beta2':[0.01]},
         'german':       {'T':[8], 'alpha':[0.01], 'gamma':gamma, 'beta0':[0.0001], 
                         'beta1': [1], 'beta2':[0.0001]},
         'ipd':          {'T':[16], 'alpha':[1], 'gamma':gamma, 'beta0':[1], 
@@ -165,24 +169,20 @@ def config_ocds(num_feat, data_name):
                         'beta1': [0.01], 'beta2':[0.01]},
         'spambase':     {'T':[16], 'alpha':[0.01], 'gamma':gamma, 'beta0':[0.01], 
                         'beta1': [0.0001], 'beta2':[0.0001]},
+        'spamassasin':  {'T':[16], 'alpha':[0.001], 'gamma':gamma, 'beta0':[0.001], 
+                        'beta1': [0.001], 'beta2':[0.001]}, # Set heuristically
         'magic04':      {'T':[16], 'alpha':[0.01], 'gamma':gamma, 'beta0':[0.01], 
                         'beta1': [0.0001], 'beta2':[0.0001]},    
         'imdb':         {'T':[16], 'alpha':[1], 'gamma':gamma, 'beta0':[0.0001], 
                         'beta1': [0.01], 'beta2':[0.01]},  # Set heuristically
         'a8a':          {'T':[16], 'alpha':[1], 'gamma':gamma, 'beta0':[1], 
                         'beta1': [0.0001], 'beta2':[0.0001]},
-        'crowdsense_c3':{'T':[8], 'alpha':[0.0001], 'gamma':gamma, 'beta0':[0.01], 
-                        'beta1': [0.0001], 'beta2':[0.01]},
-        'crowdsense_c5':{'T':[8], 'alpha':[0.01], 'gamma':gamma, 'beta0':[0.01], 
-                        'beta1': [0.01], 'beta2':[0.01]},
+        'diabetes_us':  {'T':[16], 'alpha':[0.01], 'gamma':gamma, 'beta0':[0.01], 
+                        'beta1': [1], 'beta2':[0.0001]},
         'susy':         {'T':[16], 'alpha':[0.0001], 'gamma':gamma, 'beta0':[0.01], 
                         'beta1': [0.0001], 'beta2':[0.0001]}, # Set heuristically
         'higgs':        {'T':[8], 'alpha':[0.0001], 'gamma':gamma, 'beta0':[0.0001], 
                         'beta1': [0.01], 'beta2':[0.0001]}, # Set heuristically
-        'diabetes_us':  {'T':[16], 'alpha':[0.01], 'gamma':gamma, 'beta0':[0.01], 
-                        'beta1': [1], 'beta2':[0.0001]},
-        'spamassasin':  {'T':[16], 'alpha':[0.001], 'gamma':gamma, 'beta0':[0.001], 
-                        'beta1': [0.001], 'beta2':[0.001]} # Set heuristically
     }
     config_dict = params_list[data_name]
 
@@ -249,6 +249,10 @@ def config_ovfm(data_name):
                             'decay_coef_change':[False] ,'batch_size_denominator': [8]},
         "diabetes_f"    : {'decay_choice': [2], 'contribute_error_rate': [0.05],
                             'decay_coef_change':[False] ,'batch_size_denominator': [8]},
+        "crowdsense_c3" : {'decay_choice': [4], 'contribute_error_rate': [0.01],
+                            'decay_coef_change':[False] ,'batch_size_denominator': [20]},
+        "crowdsense_c5" : {'decay_choice': [4], 'contribute_error_rate': [0.05],
+                            'decay_coef_change':[False] ,'batch_size_denominator': [20]},    
         "german"        : {'decay_choice': [3], 'contribute_error_rate': [0.005],
                             'decay_coef_change':[False] ,'batch_size_denominator': [8]},
         "ipd"           : {'decay_choice': [4], 'contribute_error_rate': [0.001],
@@ -259,23 +263,19 @@ def config_ovfm(data_name):
                             'decay_coef_change':[False] ,'batch_size_denominator': [20]},
         "spambase"      : {'decay_choice': [4], 'contribute_error_rate': [0.001],
                             'decay_coef_change':[False] ,'batch_size_denominator': [20]},
+        "spamassasin"   : {'decay_choice': [4], 'contribute_error_rate': [0.001],
+                            'decay_coef_change':[False] ,'batch_size_denominator': [20]},
         "magic04"       : {'decay_choice': [3], 'contribute_error_rate': [0.005],
                             'decay_coef_change':[False] ,'batch_size_denominator': [20]},
+        "imdb"          : {'decay_choice': [4], 'contribute_error_rate': [0.001],
+                            'decay_coef_change':[False] ,'batch_size_denominator': [20]},
         "a8a"           : {'decay_choice': [4], 'contribute_error_rate': [0.001],
+                            'decay_coef_change':[False] ,'batch_size_denominator': [20]},
+        "diabetes_us"   : {'decay_choice': [4], 'contribute_error_rate': [0.001],
                             'decay_coef_change':[False] ,'batch_size_denominator': [20]},
         "susy"          : {'decay_choice': [4], 'contribute_error_rate': [0.001],
                             'decay_coef_change':[False] ,'batch_size_denominator': [20]},
         "higgs"         : {'decay_choice': [4], 'contribute_error_rate': [0.001],
-                            'decay_coef_change':[False] ,'batch_size_denominator': [20]},
-        "crowdsense_c3" : {'decay_choice': [4], 'contribute_error_rate': [0.01],
-                            'decay_coef_change':[False] ,'batch_size_denominator': [20]},
-        "crowdsense_c5" : {'decay_choice': [4], 'contribute_error_rate': [0.05],
-                            'decay_coef_change':[False] ,'batch_size_denominator': [20]},    
-        "imdb"          : {'decay_choice': [4], 'contribute_error_rate': [0.001],
-                            'decay_coef_change':[False] ,'batch_size_denominator': [20]},
-        "spamassasin"   : {'decay_choice': [4], 'contribute_error_rate': [0.001],
-                            'decay_coef_change':[False] ,'batch_size_denominator': [20]},
-        "diabetes_us"   : {'decay_choice': [4], 'contribute_error_rate': [0.001],
                             'decay_coef_change':[False] ,'batch_size_denominator': [20]},
         "default"       : {'decay_choice': [0, 1, 2, 3, 4], 'contribute_error_rate': [0.001, 0.005, 0.01, 0.02, 0.05],
                             'decay_coef_change':[False] ,'batch_size_denominator': [20]},                                    
@@ -296,7 +296,7 @@ def config_dynfo(num_of_instances, data_name):
     operation, we need to set higher beta and theta1 values.
     '''
     config_dict = {}
-    # Setting the value of N as 10% of the data or 500 instances. Whichever is less
+    # Setting the value of N as 10% of the data or 20 instances. Whichever is less
     N = int(num_of_instances*.1)
     if N > 20:
         N = 20
@@ -316,6 +316,10 @@ def config_dynfo(num_of_instances, data_name):
                         "gamma": [0.5], "M": [500], "N": N, "theta1": [0.05], "theta2": [0.75]},
         "diabetes_f":  {"alpha": [0.5], "beta": [0.8], "delta": [0.001], "epsilon": [0.01],
                         "gamma": [0.5], "M": [500], "N": N, "theta1": [0.05], "theta2": [0.75]},
+        "crowdsense_c3":{"alpha": [0.5], "beta": [0.5], "delta": [0.01], "epsilon": [0.01],
+                        "gamma": [0.5], "M": [500], "N": N, "theta1": [0.05], "theta2": [0.75]},
+        "crowdsense_c5":{"alpha": [0.5], "beta": [0.5], "delta": [0.01], "epsilon": [0.001],
+                        "gamma": [0.5], "M": [500], "N": N, "theta1": [0.05], "theta2": [0.75]},
         "german":      {"alpha": [0.5], "beta": [0.5], "delta": [0.001], "epsilon": [0.01],
                         "gamma": [0.5], "M": [500], "N": N, "theta1": [0.05], "theta2": [0.75]},
         "ipd":         {"alpha": [0.1], "beta": [0.8], "delta": [0.001], "epsilon": [0.001],
@@ -326,24 +330,21 @@ def config_dynfo(num_of_instances, data_name):
                         "gamma": [0.5], "M": [500], "N": N, "theta1": [0.05], "theta2": [0.75]},
         "spambase":    {"alpha": [0.1], "beta": [0.5], "delta": [0.001], "epsilon": [0.001],
                         "gamma": [0.8], "M": [500], "N": N, "theta1": [0.05], "theta2": [0.75]},
+        "spamassasin": {"alpha": [0.5], "beta": [0.5], "delta": [0.001], "epsilon": [0.001],
+                        "gamma": [0.7], "M": [1000], "N": N, "theta1": [0.05], "theta2": [0.6]},
         "magic04":     {"alpha": [0.5], "beta": [0.5], "delta": [0.1], "epsilon": [0.001],
+                        "gamma": [0.7], "M": [1000], "N": N, "theta1": [0.05], "theta2": [0.6]},
+        "imdb":        {"alpha": [0.5], "beta": [0.8], "delta": [0.001], "epsilon": [0.001],
                         "gamma": [0.7], "M": [1000], "N": N, "theta1": [0.05], "theta2": [0.6]},
         "a8a":         {"alpha": [0.5], "beta": [0.5], "delta": [0.03], "epsilon": [0.001],
                         "gamma": [0.7], "M": [1000], "N": N, "theta1": [0.05], "theta2": [0.6]},
+        "diabetes_us": {"alpha": [0.5], "beta": [0.5], "delta": [0.1], "epsilon": [0.001],
+                        "gamma": [0.7], "M": [1000], "N": N, "theta1": [0.05], "theta2": [0.6]},     
         "susy":        {"alpha": [0.5], "beta": [0.5], "delta": [0.4], "epsilon": [0.001],
                         "gamma": [0.7], "M": [1000], "N": N, "theta1": [0.05], "theta2": [0.6]},
         "higgs":       {"alpha": [0.5], "beta": [0.5], "delta": [0.2], "epsilon": [0.001],
                         "gamma": [0.7], "M": [1000], "N": N, "theta1": [0.05], "theta2": [0.6]},
-        "crowdsense_c3":{"alpha": [0.5], "beta": [0.5], "delta": [0.01], "epsilon": [0.01],
-                        "gamma": [0.5], "M": [500], "N": N, "theta1": [0.05], "theta2": [0.75]},
-        "crowdsense_c5":{"alpha": [0.5], "beta": [0.5], "delta": [0.01], "epsilon": [0.001],
-                        "gamma": [0.5], "M": [500], "N": N, "theta1": [0.05], "theta2": [0.75]},
-        "imdb":        {"alpha": [0.5], "beta": [0.8], "delta": [0.001], "epsilon": [0.001],
-                        "gamma": [0.7], "M": [1000], "N": N, "theta1": [0.05], "theta2": [0.6]},
-        "spamassasin": {"alpha": [0.5], "beta": [0.5], "delta": [0.001], "epsilon": [0.001],
-                        "gamma": [0.7], "M": [1000], "N": N, "theta1": [0.05], "theta2": [0.6]},
-        "diabetes_us": {"alpha": [0.5], "beta": [0.5], "delta": [0.1], "epsilon": [0.001],
-                        "gamma": [0.7], "M": [1000], "N": N, "theta1": [0.05], "theta2": [0.6]},                
+                   
     }
     config_dict = params_list[data_name]
 
@@ -374,72 +375,124 @@ def config_dynfo(num_of_instances, data_name):
 
 # --------- ORF3V ------------
 def config_orf3v(data_name):
-    config_dict = {}
-    forestSize = [3, 5, 10] # Number of Stumps for every feature
-    replacementInterval = [5, 10] # Instances after which to replace stumps
-    replacementChance = [0.7] # If replacement strategy is random, then this is the probability not to replace each stump
-    windowSize = [20] # Buffer - stores instances on which to determine feature statistics
-    updateStrategy = ["oldest", "random"] # replacement strategy: "oldest", "random"
-    alpha = [0.01, 0.1, 0.3, 0.5, 0.9] # weight update parameter
-    delta = [0.001] # caculates hb, which is used for pruning.
-    if data_name in ["susy", "higgs", "imdb"]: # heuristically set
-        forestSize = [5]
-        replacementInterval = [10]
-        updateStrategy = ["random"] # replacement strategy: "oldest", "random"
-        alpha = [0.1] # weight update parameter
-    config_dict["forestSize"] = forestSize
-    config_dict["replacementInterval"] = replacementInterval
-    config_dict["replacementChance"] = replacementChance
-    config_dict["windowSize"] = windowSize
-    config_dict["updateStrategy"] = updateStrategy
-    config_dict["alpha"] = alpha
-    config_dict["delta"] = delta
+    # config_dict = {}
+    # forestSize = [3, 5, 10] # Number of Stumps for every feature
+    # replacementInterval = [5, 10] # Instances after which to replace stumps
+    # replacementChance = [0.7] # If replacement strategy is random, then this is the probability not to replace each stump
+    # windowSize = [20] # Buffer - stores instances on which to determine feature statistics
+    # updateStrategy = ["oldest", "random"] # replacement strategy: "oldest", "random"
+    # alpha = [0.01, 0.1, 0.3, 0.5, 0.9] # weight update parameter
+    # delta = [0.001] # caculates hb, which is used for pruning.
+    # if data_name in ["susy", "higgs", "imdb"]: # heuristically set
+    #     forestSize = [5]
+    #     replacementInterval = [10]
+    #     updateStrategy = ["random"] # replacement strategy: "oldest", "random"
+    #     alpha = [0.1] # weight update parameter
+    # config_dict["forestSize"] = forestSize
+    # config_dict["replacementInterval"] = replacementInterval
+    # config_dict["replacementChance"] = replacementChance
+    # config_dict["windowSize"] = windowSize
+    # config_dict["updateStrategy"] = updateStrategy
+    # config_dict["alpha"] = alpha
+    # config_dict["delta"] = delta
         
-    # params_list = {
-    #     "wpbc":        {"forestSize": [10], "replacementInterval": [5], "replacementChance": [0.7], 
-    #                     "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.01], "delta": [0.001]},
-    #     "ionosphere":  {"forestSize": [5], "replacementInterval": [10], "replacementChance": [0.7], 
-    #                     "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.9], "delta": [0.001]},
-    #     "wdbc":        {"forestSize": [10], "replacementInterval": [10], "replacementChance": [0.7], 
-    #                     "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.9], "delta": [0.001]},
-    #     "australian":  {"forestSize": [10], "replacementInterval": [10], "replacementChance": [0.7], 
-    #                     "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.9], "delta": [0.001]},
-    #     "wbc":         {"forestSize": [5], "replacementInterval": [5], "replacementChance": [0.7], 
-    #                     "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.9], "delta": [0.001]},
-    #     "diabetes_f":  {"forestSize": [3], "replacementInterval": [5], "replacementChance": [0.7], 
-    #                     "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.3], "delta": [0.001]},
-    #     "german":      {"forestSize": [5], "replacementInterval": [5], "replacementChance": [0.7], 
-    #                     "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.3], "delta": [0.001]},
-    #     "ipd":         {"forestSize": [10], "replacementInterval": [10], "replacementChance": [0.7], 
-    #                     "windowSize": [20], "updateStrategy": ['random'], "alpha": [0.1], "delta": [0.001]},
-    #     "svmguide3":   {"forestSize": [5], "replacementInterval": [10], "replacementChance": [0.7], 
-    #                     "windowSize": [20], "updateStrategy": ['random'], "alpha": [0.3], "delta": [0.001]},
-    #     "krvskp":      {"forestSize": [5], "replacementInterval": [5], "replacementChance": [0.7], 
-    #                     "windowSize": [20], "updateStrategy": ['random'], "alpha": [0.1], "delta": [0.001]},
-    #     "spambase":    {"forestSize": [10], "replacementInterval": [10], "replacementChance": [0.7], 
-    #                     "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.1], "delta": [0.001]},
-    #     "magic04":     {"forestSize": [10], "replacementInterval": [5], "replacementChance": [0.7], 
-    #                     "windowSize": [20], "updateStrategy": ['random'], "alpha": [0.01], "delta": [0.001]},
-    #     # "a8a":         {"forestSize": [10], "replacementInterval": [5], "replacementChance": [0.7], 
-    #                     # "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.01], "delta": [0.001]},
-    #     "susy":        {"forestSize": [5], "replacementInterval": [10], "replacementChance": [0.7], 
-    #                     "windowSize": [20], "updateStrategy": ['random'], "alpha": [0.1], "delta": [0.001]},
-    #     "higgs":       {"forestSize": [5], "replacementInterval": [10], "replacementChance": [0.7], 
-    #                     "windowSize": [20], "updateStrategy": ['random'], "alpha": [0.1], "delta": [0.001]},
-    #     "crowdsense_c3":{"forestSize": [10], "replacementInterval": [5], "replacementChance": [0.7], 
-    #                     "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.01], "delta": [0.001]},
-    #     "crowdsense_c5":{"forestSize": [10], "replacementInterval": [5], "replacementChance": [0.7], 
-    #                     "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.01], "delta": [0.001]},
-    #     "imdb":        {"forestSize": [10], "replacementInterval": [5], "replacementChance": [0.7], 
-    #                     "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.01], "delta": [0.001]},
-    #     "spamassasin": {"forestSize": [10], "replacementInterval": [5], "replacementChance": [0.7], 
-    #                     "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.01], "delta": [0.001]},
-    #     "diabetes_us": {"forestSize": [10], "replacementInterval": [5], "replacementChance": [0.7], 
-    #                     "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.01], "delta": [0.001]},
-    # }
-    # config_dict = params_list[data_name]
+    params_list = {
+        "wpbc":        {"forestSize": [10], "replacementInterval": [5], "replacementChance": [0.7], 
+                        "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.01], "delta": [0.001]},
+        "ionosphere":  {"forestSize": [5], "replacementInterval": [10], "replacementChance": [0.7], 
+                        "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.9], "delta": [0.001]},
+        "wdbc":        {"forestSize": [10], "replacementInterval": [10], "replacementChance": [0.7], 
+                        "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.9], "delta": [0.001]},
+        "australian":  {"forestSize": [10], "replacementInterval": [10], "replacementChance": [0.7], 
+                        "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.9], "delta": [0.001]},
+        "wbc":         {"forestSize": [5], "replacementInterval": [5], "replacementChance": [0.7], 
+                        "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.9], "delta": [0.001]},
+        "diabetes_f":  {"forestSize": [3], "replacementInterval": [5], "replacementChance": [0.7], 
+                        "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.3], "delta": [0.001]},
+        "crowdsense_c3":{"forestSize": [10], "replacementInterval": [5], "replacementChance": [0.7], 
+                        "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.01], "delta": [0.001]},
+        "crowdsense_c5":{"forestSize": [10], "replacementInterval": [5], "replacementChance": [0.7], 
+                        "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.01], "delta": [0.001]},
+        "german":      {"forestSize": [5], "replacementInterval": [5], "replacementChance": [0.7], 
+                        "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.3], "delta": [0.001]},
+        "ipd":         {"forestSize": [10], "replacementInterval": [10], "replacementChance": [0.7], 
+                        "windowSize": [20], "updateStrategy": ['random'], "alpha": [0.1], "delta": [0.001]},
+        "svmguide3":   {"forestSize": [5], "replacementInterval": [10], "replacementChance": [0.7], 
+                        "windowSize": [20], "updateStrategy": ['random'], "alpha": [0.3], "delta": [0.001]},
+        "krvskp":      {"forestSize": [5], "replacementInterval": [5], "replacementChance": [0.7], 
+                        "windowSize": [20], "updateStrategy": ['random'], "alpha": [0.1], "delta": [0.001]},
+        "spambase":    {"forestSize": [10], "replacementInterval": [10], "replacementChance": [0.7], 
+                        "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.1], "delta": [0.001]},
+        "spamassasin": {"forestSize": [10], "replacementInterval": [5], "replacementChance": [0.7], 
+                        "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.01], "delta": [0.001]},
+        "magic04":     {"forestSize": [10], "replacementInterval": [5], "replacementChance": [0.7], 
+                        "windowSize": [20], "updateStrategy": ['random'], "alpha": [0.01], "delta": [0.001]},
+        "imdb":        {"forestSize": [10], "replacementInterval": [5], "replacementChance": [0.7], 
+                        "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.01], "delta": [0.001]},
+        "a8a":         {"forestSize": [10], "replacementInterval": [10], "replacementChance": [0.7], 
+                        "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.1], "delta": [0.001]},
+        "diabetes_us": {"forestSize": [10], "replacementInterval": [5], "replacementChance": [0.7], 
+                        "windowSize": [20], "updateStrategy": ['oldest'], "alpha": [0.01], "delta": [0.001]},
+        "susy":        {"forestSize": [5], "replacementInterval": [10], "replacementChance": [0.7], 
+                        "windowSize": [20], "updateStrategy": ['random'], "alpha": [0.1], "delta": [0.001]},
+        "higgs":       {"forestSize": [5], "replacementInterval": [10], "replacementChance": [0.7], 
+                        "windowSize": [20], "updateStrategy": ['random'], "alpha": [0.1], "delta": [0.001]},
+    }
+    config_dict = params_list[data_name]
 
     return config_dict
+
+# --------- Aux-Net ------------
+def config_auxnet(data_name):
+    config_dict = {}
+
+    params_list = {
+        "wpbc":        {"no_of_base_layers": [5], "no_of_end_layers": [5], "nodes_in_each_layer": [50], 
+                        "b": [0.99], "s": [0.2], "lr": [.001]},
+        "ionosphere":  {"no_of_base_layers": [5], "no_of_end_layers": [5], "nodes_in_each_layer": [50], 
+                        "b": [0.99], "s": [0.2], "lr": [.001]},
+        "wdbc":        {"no_of_base_layers": [5], "no_of_end_layers": [5], "nodes_in_each_layer": [50], 
+                        "b": [0.99], "s": [0.2], "lr": [.01]},
+        "australian":  {"no_of_base_layers": [5], "no_of_end_layers": [5], "nodes_in_each_layer": [50], 
+                        "b": [0.99], "s": [0.2], "lr": [.01]},
+        "wbc":         {"no_of_base_layers": [5], "no_of_end_layers": [5], "nodes_in_each_layer": [50], 
+                        "b": [0.99], "s": [0.2], "lr": [.001]},
+        "diabetes_f":  {"no_of_base_layers": [5], "no_of_end_layers": [5], "nodes_in_each_layer": [50], 
+                        "b": [0.99], "s": [0.2], "lr": [.05]},
+        "crowdsense_c3":{"no_of_base_layers": [5], "no_of_end_layers": [5], "nodes_in_each_layer": [50], 
+                        "b": [0.99], "s": [0.2], "lr": [0.001]},
+        "crowdsense_c5":{"no_of_base_layers": [5], "no_of_end_layers": [5], "nodes_in_each_layer": [50], 
+                        "b": [0.99], "s": [0.2], "lr": [0.001]},
+        "german":      {"no_of_base_layers": [5], "no_of_end_layers": [5], "nodes_in_each_layer": [50], 
+                        "b": [0.99], "s": [0.2], "lr": [.001]},
+        "ipd":         {"no_of_base_layers": [5], "no_of_end_layers": [5], "nodes_in_each_layer": [50], 
+                        "b": [0.99], "s": [0.2], "lr": [.001]},
+        "svmguide3":   {"no_of_base_layers": [5], "no_of_end_layers": [5], "nodes_in_each_layer": [50], 
+                        "b": [0.99], "s": [0.2], "lr": [.1]},
+        "krvskp":      {"no_of_base_layers": [5], "no_of_end_layers": [5], "nodes_in_each_layer": [50], 
+                        "b": [0.99], "s": [0.2], "lr": [.001]},
+        "spambase":    {"no_of_base_layers": [5], "no_of_end_layers": [5], "nodes_in_each_layer": [50], 
+                        "b": [0.99], "s": [0.2], "lr": [.005]},
+        "spamassasin": {"no_of_base_layers": [5], "no_of_end_layers": [5], "nodes_in_each_layer": [50], 
+                        "b": [0.99], "s": [0.2], "lr": [0.01]},
+        "magic04":     {"no_of_base_layers": [5], "no_of_end_layers": [5], "nodes_in_each_layer": [50], 
+                        "b": [0.99], "s": [0.2], "lr": [.5]},
+        "imdb":        {"no_of_base_layers": [5], "no_of_end_layers": [5], "nodes_in_each_layer": [50], 
+                        "b": [0.99], "s": [0.2], "lr": [0.01]},
+        "a8a":         {"no_of_base_layers": [5], "no_of_end_layers": [5], "nodes_in_each_layer": [50], 
+                        "b": [0.99], "s": [0.2], "lr": [0.01]},
+        "diabetes_us": {"no_of_base_layers": [5], "no_of_end_layers": [5], "nodes_in_each_layer": [50], 
+                        "b": [0.99], "s": [0.2], "lr": [0.05]},
+        "susy":        {"no_of_base_layers": [5], "no_of_end_layers": [5], "nodes_in_each_layer": [50], 
+                        "b": [0.99], "s": [0.2], "lr": [0.05]},
+        "higgs":       {"no_of_base_layers": [5], "no_of_end_layers": [5], "nodes_in_each_layer": [50], 
+                        "b": [0.99], "s": [0.2], "lr": [0.05]},
+    }
+    
+    config_dict = params_list[data_name]
+
+    return config_dict
+
 
 # --------- Aux-Drop ------------
 def config_auxdrop(if_auxdrop_no_assumption_arch_change, X, data_name,
@@ -473,9 +526,9 @@ def config_auxdrop(if_auxdrop_no_assumption_arch_change, X, data_name,
     n_classes = 2 # The total number of classes (output labels)
     batch_size = 1 # The batch size is always 1 since it is based on stochastic gradient descent
     b = [0.99] # discount rate
-    s = [0.2] # learning rate
+    s = [0.2] # smoothing parameter
 
-    # n = [0.001, 0.005, 0.01, 0.05, 0.1, 0.3, 0.5] # smoothing rate
+    # n = [0.001, 0.005, 0.01, 0.05, 0.1, 0.3, 0.5] # learning rate
     n = {"wpbc": [0.01], "ionosphere": [0.5], "wdbc": [0.01], "australian": [0.005],
          "wbc": [0.1], "diabetes_f": [0.001], "german": [0.001], "ipd": [0.3],
          "svmguide3": [0.001], "krvskp": [0.1], "spambase": [0.005], "magic04": [0.01],

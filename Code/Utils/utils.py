@@ -10,17 +10,12 @@ def seed_everything(seed: int):
     np.random.seed(seed)
     torch.manual_seed(seed)
 
-# Prepare data for naive BAyes
+# Prepare data for naive Bayes
 def process_single_input(x, mask):
     return {f"{i}": val for i, val in enumerate(x) if mask[i]}
 
 def prepare_data_naiveBayes(X, mask):
     return list(map(process_single_input, X, mask))
-
-# Dummy feature creation for aux-drop code
-def dummy_feat(n_instances, n_feat, dummy_type = "standardnormal"):
-    if dummy_type == "standardnormal":
-        return np.random.normal(0, 1, (n_instances, n_feat))
 
 
 # Impute to create base features
@@ -44,4 +39,25 @@ def impute_data(data, mask, imputation_type):
     elif imputation_type == 'zerofill':
         return data
     return data
+
+# Prepare data for AuxNet (can also be used for AuxDrop)
+def prepare_data_imputation(X_haphazard, mask, imputation_type, n_impute_feat):
+    base_index_list = []
+    i = 0
+    while n_impute_feat > len(base_index_list):
+            temp_index = np.where(mask[i] == 1)[0]
+            i  = i + 1
+            base_index_list = list(set(base_index_list) | set(temp_index))
+    
+    base_index_list = base_index_list[:n_impute_feat]
+    aux_index_list = [a for a in range(mask.shape[1]) if a not in base_index_list]
+    X_base = impute_data(X_haphazard[:, base_index_list], mask[:, base_index_list], imputation_type)
+
+    return X_base, X_haphazard[:, aux_index_list], mask[:, aux_index_list]
+
+
+# Dummy feature creation for aux-drop and aux-net code
+def dummy_feat(n_instances, n_feat, dummy_type = "standardnormal"):
+    if dummy_type == "standardnormal":
+        return np.random.normal(0, 1, (n_instances, n_feat))
 

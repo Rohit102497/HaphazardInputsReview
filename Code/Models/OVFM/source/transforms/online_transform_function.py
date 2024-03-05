@@ -166,6 +166,8 @@ class OnlineTransformFunction():
         to continuous entries to the corresponding imputed oberserved value
         """
         quantiles = norm.cdf(z_batch_missing)
+        if np.isnan(quantiles[0]):
+            quantiles[0] = 0.5
         return np.quantile(window, quantiles)
 
     def get_ord_latent(self, x_batch_obs, window):

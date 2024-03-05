@@ -8,6 +8,7 @@ from data_utils import data_load_susy, data_load_higgs, data_load_diabetes_f
 from data_utils import data_load_diabetes_us, data_load_imdb, data_load_spamassasin
 from data_utils import data_load_crowdsense_c3, data_load_crowdsense_c5
 
+# Making sure that each instance has atleast one feature
 def check_mask_each_instance(mask):
     index_0 = np.where(np.sum(mask, axis = 1) == 0)
     random_index = np.random.randint(mask.shape[1], size = (len(index_0[0])))

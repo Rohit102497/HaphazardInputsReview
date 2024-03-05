@@ -67,12 +67,12 @@ if __name__ == '__main__':
         values_list = []
         for i in data['results'].keys():
             index.append(i)
+            print(i, pd.DataFrame(data['results'][i]), pd.DataFrame(data['results'][i]).iloc[:, 5:6])
             val_list = pd.DataFrame(data['results'][i]).mean(axis = 0).values.tolist()
             values_list.append(['%.2f' % elem for elem in val_list])
         col_name = list(data['results'][i][0].keys())
         # print(index)
-        # print(values_list)
-
+        
         mean_df = pd.DataFrame(values_list, index = index, columns=col_name)
         # print("Mean Values:")
         # print(mean_df)

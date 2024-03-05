@@ -26,9 +26,9 @@ def run_dynfo(X, Y, X_haphazard, mask, num_runs, model_params, initial_buffer):
     result = {}
     params_list = create_param_list(model_params)
     print("Number of experiments to run: ", len(params_list))
-    for i in range(len(params_list)): # len(params_list)
-        params = params_list[i]
-        print("Experiment number: ", i+1, "\nParams: \n", params)
+    for k in range(len(params_list)): # len(params_list)
+        params = params_list[k]
+        print("Experiment number: ", k+1, "\nParams: \n", params)
         eval_list = []
         for j in range(num_runs):
             # Seeding for model

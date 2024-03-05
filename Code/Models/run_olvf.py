@@ -19,8 +19,8 @@ def run_olvf(X_haphazard, mask, Y, num_runs, model_params):
     result = {}
     params_list = create_param_list(model_params)
     print("number of runs:", num_runs)
-    for i in range(len(params_list)): # Different combination of params
-        params = params_list[i]
+    for k in range(len(params_list)): # Different combination of params
+        params = params_list[k]
         eval_list = []
         for j in range(num_runs):
             # Seeding for model

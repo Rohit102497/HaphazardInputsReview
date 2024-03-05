@@ -32,10 +32,10 @@ def run_ovfm(X, Y, X_haphazard, mask, num_runs, model_params):
     result = {}
     params_list = create_param_list(model_params)
     print("number of runs:", len(params_list))
-    for i in range(len(params_list)):
-        params = params_list[i]
+    for k in range(len(params_list)):
+        params = params_list[k]
         eval_list = []
-        print("Experiment number: ", i+1, "\nParams: \n", params)
+        print("Experiment number: ", k+1, "\nParams: \n", params)
         for j in range(num_runs):            
             # Seeding for model
             seed_everything(j)

@@ -1,5 +1,7 @@
 import numpy as np
 from scipy.stats import norm, truncnorm
+import warnings
+warnings.filterwarnings("error")
 
 def _em_step_body_(args):
     """
@@ -136,6 +138,8 @@ def _em_step_body_row(Z_row, r_lower_row, r_upper_row, sigma, num_ord_updates=1)
                         Z_row[j] = mean
                 except OverflowError:
                     print("Truncnorm stats gives overflow error because the range is out of tail. We handle this by assuming that mean and var is infinite.")
+                except RuntimeWarning:
+                    print("Truncnorm stats gives runtime warning becasue of invalid value encountered in power. We handle this by assuming that mean and var is infinite.")
                 
 
     # MISSING ELEMENTS

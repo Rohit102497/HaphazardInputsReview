@@ -15,8 +15,8 @@ import time
 
 def run_auxdrop(X_base, X_aux_new, aux_mask, Y, num_runs, model_params_list):
     result = {}
-    for i in range(len(model_params_list)):
-        model_params = model_params_list[0]
+    for k in range(len(model_params_list)):
+        model_params = model_params_list[k]
         eval_list = []
         for j in range(num_runs):
             # Seeding for model
@@ -63,9 +63,9 @@ def run_auxdrop_arch_change(Y, X_haphazard, mask, num_runs, model_params):
     result = {}
     params_list = arch_change_create_param_list(model_params)
     print("Number of experiments to run: ", len(params_list))
-    for i in range(len(params_list)):
-        params = params_list[i]
-        print("Experiment number: ", i+1, "\nParams: \n", params)
+    for k in range(len(params_list)):
+        params = params_list[k]
+        print("Experiment number: ", k+1, "\nParams: \n", params)
         eval_list = []
         for j in range(num_runs):
             # Seeding for model

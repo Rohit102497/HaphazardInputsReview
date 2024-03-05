@@ -19,6 +19,7 @@ from Models.run_orf3v import run_orf3v
 from Models.run_ocds import run_ocds
 from Models.run_auxdrop import run_auxdrop, run_auxdrop_arch_change
 from Models.run_ovfm import run_ovfm
+from Models.run_auxnet import run_auxnet
 from Config import config_models
 
 #--------------All Variables--------------#
@@ -56,6 +57,8 @@ if __name__ == '__main__':
     parser.add_argument('--imputationtype', default = 'forwardfill', type = str,
                         choices = ['forwardfill', 'forwardmean', 'zerofill'],
                         help = "The type of imputation technique to create base features")
+    parser.add_argument('--nimputefeat', default = 2, type = int,
+                        help = "The number of imputation features")    
     parser.add_argument('--ifdummyfeat', default = False, type = bool,
                         help = "If some dummy features needs to be created")
     parser.add_argument('--dummytype', default = 'standardnormal', type = str,
@@ -79,6 +82,7 @@ if __name__ == '__main__':
     initial_buffer = args.initialbuffer
     if_imputation = args.ifimputation
     imputation_type = args.imputationtype
+    n_impute_feat = args.nimputefeat
     if_dummy_feat = args.ifdummyfeat
     dummy_type = args.dummytype
     n_dummy_feat = args.ndummyfeat
@@ -93,7 +97,7 @@ if __name__ == '__main__':
                         "diabetes_f", "wbc", "australian", "wdbc", "ionosphere", "wpbc"]
     elif data_name == "synthetic":
         data_name_list= ["wpbc", "ionosphere", "wdbc", "australian", "wbc", "diabetes_f", "german", "ipd", 
-                         "svmguide3", "krvskp", "spambase", "magic04", "a8a", "susy", "higgs"] # 
+                         "svmguide3", "krvskp", "spambase"] # , "magic04", "a8a", "susy", "higgs"
     else:
         data_name_list = [data_name]
     
@@ -111,8 +115,8 @@ if __name__ == '__main__':
                 "syn_data_type": syn_data_type,
                 "p_available": p_available, "if_base_feat": if_base_feat, 
                 "if_imputation": if_imputation, "imputation_type": imputation_type,
-                "if_dummy_feat": if_dummy_feat, "dummy_type": dummy_type,
-                "n_dummy_feat": n_dummy_feat, "n_runs": n_runs,
+                "n_impute_feat": n_impute_feat, "if_dummy_feat": if_dummy_feat,
+                "dummy_type": dummy_type, "n_dummy_feat": n_dummy_feat, "n_runs": n_runs,
                 "if_auxdrop_no_assumption_arch_change": if_auxdrop_no_assumption_arch_change
                 }
         #--------------SeedEverything--------------#
@@ -151,7 +155,13 @@ if __name__ == '__main__':
         elif method_name == "dynfo":
             param_dict["config"] = config_models.config_dynfo(X.shape[0], data_name)
         elif method_name == "orf3v":
-            param_dict["config"] = config_models.config_orf3v(data_name)  
+            param_dict["config"] = config_models.config_orf3v(data_name)
+        elif method_name == "auxnet":
+            param_dict["config"] = config_models.config_auxnet(data_name)
+            if if_imputation:
+                X_base, X_haphazard, mask = utils.prepare_data_imputation(X_haphazard, mask, imputation_type, n_impute_feat)
+            if if_dummy_feat:
+                X_base = utils.dummy_feat(X_haphazard.shape[0], n_dummy_feat, dummy_type = "standardnormal")
         elif method_name == "auxdrop":
             if if_auxdrop_no_assumption_arch_change:
                 param_dict["config"] = config_models.config_auxdrop(if_auxdrop_no_assumption_arch_change, 
@@ -163,8 +173,6 @@ if __name__ == '__main__':
                                         X, data_name, if_imputation, if_dummy_feat, 
                                         n_dummy_feat, X_haphazard, mask, imputation_type,
                                         dummy_type)
-        
-
         print(param_dict)
         #--------------Run Model--------------#
         result = []
@@ -182,6 +190,8 @@ if __name__ == '__main__':
             result = run_dynfo(X, Y, X_haphazard, mask, n_runs, param_dict["config"], initial_buffer)
         elif method_name == "orf3v":
             result = run_orf3v(X, Y, X_haphazard, mask, n_runs, param_dict["config"], initial_buffer)
+        elif method_name == "auxnet":
+            result = run_auxnet(X_base, X_haphazard, mask, Y, n_runs, param_dict["config"])
         elif method_name == "auxdrop":
             if if_auxdrop_no_assumption_arch_change:
                 result = run_auxdrop_arch_change(Y, X_haphazard, mask, n_runs, param_dict["config"])
