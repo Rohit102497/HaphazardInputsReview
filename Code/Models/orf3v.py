@@ -1,11 +1,15 @@
+# This is adapted/translated form ORF3V source code, originaly in 'Go' language
+
 import numpy as np
 import math
 import random
 from tdigest import TDigest
 
+# Function to calculate Hoeffding bound
 def calcHB(delta, windowSize):
     return math.sqrt(math.log(1/delta) / (2 * float(windowSize)))
 
+# Custom queue implementation that pops elements automatically, when pushed into a full queue
 class Queue:
     def __init__(self, n):
         self.n = n
@@ -20,6 +24,7 @@ class Queue:
         m  = 1.0 * sum(self.queue)/len(self.queue)
         return m
 
+# Custom class to store and update feature statistics
 class FeatStats:
     def __init__(self, n, x=None, y=None, numClasses = 2):
         self.slidingWindow = Queue(n)
@@ -49,11 +54,11 @@ class FeatStats:
         else:
             self.slidingWindow.add(False)
 
+# Custiom implementation of decision stump compatible wih TDigest data structure and support update in online fashion
 class Stump:
     def __init__(self, minValue, maxValue, digestPerClass, classCounts):
         self.age=0
         self.threshold = minValue + random.random() * (maxValue - minValue)
-        # print(f"min: {minValue:<10} | max: {maxValue:<10} | thresh: {self.threshold:<10}")
         self.gini, self.classDistAbove, self.classDistBelow = self.calcApproxGini(digestPerClass, classCounts)
         
         if all(prob == 0.0 for prob in self.classDistAbove.values()):
@@ -80,7 +85,6 @@ class Stump:
             countAbove += classDistAbove[Class] * classCounts[Class] #NA
         
         normalizedClassDistBelow, normalizedClassDistAbove = dict(), dict()
-        # epsilon = np.finfo(float).eps
         for Class in classCounts:
             normalizedClassDistBelow[Class] = classDistBelow[Class] * classCounts[Class] / (countBelow)\
                                                  if countBelow != 0.0 else 0.0 # P(fi<Xj | C) * (Nc) / NB
@@ -105,6 +109,7 @@ class Stump:
         else:
             return self.classDistAbove
 
+# Forest of decision stumps for a particular feature
 class FeatureForest:
     def __init__(self, n, feature, featStats, numClasses):
         self.feature = feature
@@ -132,6 +137,15 @@ class FeatureForest:
 class ORF3V:
     def __init__(self, Xs, X_masks, Ys, forestSize=200, replacementInterval=50, replacementChance=0.3, windowSize = 200, 
                 updateStrategy = "oldest", alpha = 0.1, delta = 0.001, numClasses = 2):
+        
+        # forestSize - Mumber of stumps for every feature
+        # replacementInterval - Instances after which stumps might get replaced
+        # replacementChance - Probability to not replace stump for "random" update strategy
+        # windowsize - Buffer storage size on which to determine feature statistics
+        # updateStrategy - Strategy to replace stumps ("oldest" or "random")
+        # alpha - Weight update parameter
+        # delta - Pruning parameter 
+        # num_classes - Number of target classes
 
         self.forestSize = forestSize
         self.replacementInterval = replacementInterval
@@ -241,7 +255,6 @@ class ORF3V:
         if (self.counter > self.windowSize) and (self.counter%self.replacementInterval == 0):
             pruned_feature = []
             for feature, featStats in self.featStats.items():
-                # print("First Occurance: ", self.firstOccurance)
                 if featStats.seenInstances > self.windowSize:
                     totalMean = (featStats.seenInstances)/(self.counter-self.firstOccurance[feature])
                     windowMean = featStats.slidingWindow.mean()
@@ -253,7 +266,6 @@ class ORF3V:
         return
 
     def prune(self, feature):
-        # print("Pruned feature:", feature)
         del self.featureForest[feature], self.weights[feature], self.firstOccurance[feature], self.featStats[feature]
         self.featureSet.remove(feature)
         return  

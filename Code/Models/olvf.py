@@ -157,6 +157,13 @@ class InstanceClassifier:
 
 class OLVF:
     def __init__(self, C, C_bar, B, reg, n_feat0):
+        
+        # C -  loss bounding parameter for instance classifier [.0001, .01, 1]
+        # C_bar - loss bounding parameter for feature classifier [.0001, .01, 1]
+        # B proportion of selected features for sparsity [.01, .1, .3, .5, .7, .9, 1]
+        # reg - regularization parameter
+        # n_feat0 - Total number of features to be ecountered (for ease of coding)
+        
         self.C = C
         self.C_bar = C_bar
         self.B = B

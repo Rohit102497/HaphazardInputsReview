@@ -6,6 +6,7 @@ def remove_elements_by_indices(input_list, indices_to_remove):
     result_list = [element for index, element in enumerate(input_list) if index not in indices_to_remove]
     return result_list
 
+# Helper function for custom implementation of DescisionStump
 def cal_partial(l_y, l, y_sign):
     mask= l_y == 0
     flag = np.array([0]*l)
@@ -13,6 +14,8 @@ def cal_partial(l_y, l, y_sign):
     flag[mask] = 0
     return flag
 
+# Implementation of fixed size queue
+# Automatically pops elements when new element inserted in a full queue
 class Queue:
     def __init__(self, n: int):
         self.queue = []
@@ -23,6 +26,7 @@ class Queue:
         if len(self.queue) > self.n:
             self.queue.pop(0)
 
+# Buffer to store instances and retrive them featurewise
 class InstanceBuffer:
     def __init__(self, n: int):
         self.X = Queue(n)
@@ -42,6 +46,8 @@ class InstanceBuffer:
         instances = np.where(X_mask[:,feature])[0]
         return X[instances, feature], Y[instances]
 
+
+# Custom implementaion of DescisionStump to suit an online learning setting
 class DecisionStump:
     def __init__(self):
         self.best_gini = float('inf')
@@ -53,8 +59,6 @@ class DecisionStump:
         self.probability_positive = None
         self.probability_negative = None
     
-
-
     def fit(self, X: np.array, y: np.array, feature_index: int):
         y = y.reshape(-1)
         self.accepted_features.add(feature_index)
@@ -95,13 +99,6 @@ class DecisionStump:
             self.prediction_negative = self.get_majority_class(y_negative)
             self.probability_positive = sum(y_positive == self.prediction_positive)/len(y_positive) if len(y_positive)!=0 else 0.0
             self.probability_negative = sum(y_negative == self.prediction_negative)/len(y_negative) if len(y_negative)!=0 else 0.0
-    
-    # def calculate_gini(self, y_positive: np.array, y_negative: np.array) -> float:
-    #     total_samples = len(y_positive) + len(y_negative)
-    #     gini_positive = 1.0 - sum((np.sum(y_positive == c) / len(y_positive)) ** 2 for c in set(y_positive))
-    #     gini_negative = 1.0 - sum((np.sum(y_negative == c) / len(y_negative)) ** 2 for c in set(y_negative))
-    #     gini = (len(y_positive) / total_samples) * gini_positive + (len(y_negative) / total_samples) * gini_negative
-    #     return gini  
 
     def predict(self, X: np.array) -> int:
         return (self.prediction_positive, self.probability_positive) if X[self.feature_index] <= self.threshold \
@@ -116,6 +113,7 @@ class DecisionStump:
     def splitDescision(self) -> int:
         return self.feature_index
 
+# Window for each stump to keep track of accuracy
 class Window(Queue):
     def __init__(self, n):
         super().__init__(n)
@@ -130,7 +128,18 @@ class DynFo:
     def __init__(self, Xs: np.array=None, X_masks: np.array=None, Ys: np.array=None,
                  alpha = 0.5, beta = 0.3, delta = 0.01, epsilon = 0.001, 
                  gamma = 0.7, M = 1000, N = 1000, theta1=0.05, theta2=0.6, num_classes = 2):
-        # α = 0.5, β = 0.3, δ = 0.01, epsilon = 0.001, γ = 0.7, θ1 = 0.05, θ2 = 0.6, M = 1000, N = 1000 on real world dataset
+        
+        # alpha - Impact on weight update
+        # beta - Probability to keep the weak learner in ensemble
+        # delta - Fraction of features to consider (bagging parameter)
+        # epsilon - Penalty if the split of decision stump is not in the current instance
+        # gamma - Threshold for error rate
+        # M - Number of learners in the ensemble
+        # N - Buffer size of instances
+        # theta1 - Lower bounds for the update strategy
+        # theta2 - Upper bounds for the update strategy
+        # num_classes - Number of target classes
+        
         self.alpha      = alpha
         self.beta       = beta
         self.delta      = delta
@@ -215,6 +224,7 @@ class DynFo:
         assert (len(self.weights) == len(self.learners)) and (len(self.acceptedFeatures) == len(self.learners))
     
     def predict(self, X):
+        # Take the weighted sum of every learner (decision stump)
         wc = np.array([0.0] * self.num_classes)
         for learner, weight in zip(self.learners, self.weights):
             if learner.splitDescision() in self.currentFeatures:
@@ -227,32 +237,27 @@ class DynFo:
 
     def update(self, X, Y):
         for j in range(len(self.weights)):
+            
+            # Peanalize learner if split decision not in their featureset, otherwise update learner weight
             if self.learners[j].splitDescision() not in self.currentFeatures:
                 self.weights[j] -= self.epsilon
             else:
                 i = int(self.learners[j].predict(X)[0] == Y)
                 self.weights[j] = (i*2*self.alpha + self.weights[j]) / (1 + self.alpha)
         
+        # get index of learners to relearn
         q2 = np.quantile(self.weights, self.theta2)        
         relearnIdx = np.where((self.theta1 <= np.array(self.weights)) * (np.array(self.weights) < q2))[0]
         relearnIdx = random.sample(list(relearnIdx), int((1-self.beta)*len(relearnIdx)))
-        # print("Number of relearns: ", len(relearnIdx))
         for i in relearnIdx:
             self.relearnLearner(i)
             self.weights[i] = 1
 
+        # get index of learners to drop
         dropIdx = np.where((np.array(self.weights) < self.theta1))[0]
-        # print("Number of drops: ", len(dropIdx))
         for i in range(len(dropIdx)):
             self.dropLearner(dropIdx[i] - i)
-        # print("Number of learners: ", len(self.weights))
-
-        # if len(dropIdx) != 0:
-        #     self.learners = remove_elements_by_indices(self.learners, dropIdx)
-        #     self.weights = remove_elements_by_indices(self.weights, dropIdx)
-        #     self.acceptedFeatures = remove_elements_by_indices(self.acceptedFeatures, dropIdx)
-        # assert (len(self.weights) == len(self.learners)) and (len(self.acceptedFeatures) == len(self.learners))
-
+    
     def partial_fit(self, X, X_mask, Y):
 
         self.instance_buffer.add(X, X_mask, Y)

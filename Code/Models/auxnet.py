@@ -9,6 +9,15 @@ class AuxNet(nn.Module):
     def __init__(self, no_of_base_layers, no_of_aux_layers, no_of_end_layers, nodes_in_each_layer, 
                  b=0.99, s=0.2, input_shape=1, output_shape=2):
         super(AuxNet, self).__init__()
+        
+        # no_of_base_layers - Number of base features
+        # no_of_aux_layers - Number of auxiliary layers
+        # no_of_end_layers - Number of end layers
+        # nodes_in_each_layer - Number of nodes in each hidden layer except the first base layer, first aux layer and first end layer
+        # b - discount rate
+        # s - smoothing rate
+        # input_shape - Shape of the input to base layer
+        # output_shape - Number of possible classes to be classified into
 
         self.beta = b
         self.lamda = s
@@ -93,6 +102,7 @@ class AuxNet(nn.Module):
             out.append(self.aux_out_layers[i](aux_out[-1]))
         # x = torch.concatenate(aux_out, dim=0)
         
+        # preparing input it the end layers
         end_input = torch.zeros(((self.no_of_aux_layers+1), self.nodes_in_each_layer))
         
         if len(present_features):
@@ -119,7 +129,8 @@ class AuxNet(nn.Module):
             end_out.append(self.end_layers[i](x))
             out.append(self.end_out_layers[i](end_out[-1]))
             x = end_out[-1]
-            
+        
+        # taking logits of each layer and getting the weighted average of all the available feature values to get the final output
         logits = torch.concatenate(out+[middle_out], dim=0)
         
         idx =   list(range(self.no_of_base_layers)) + \
@@ -137,6 +148,7 @@ class AuxNet(nn.Module):
         return logit, logits
     
     
+    # Custom weight update using ODL
     def update_layer_weights(self, losses, mask):
         with torch.no_grad():
             present_features = np.where(mask)[0]

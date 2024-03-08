@@ -1,3 +1,5 @@
+# This script is a wrapper on the code of OVFM provided in the source paper by the authors
+
 import numpy as np
 
 from Models.OVFM.source.em.online_expectation_maximization import OnlineExpectationMaximization
@@ -8,6 +10,17 @@ class OVFM:
 
     def __init__(self, decay_choice, contribute_error_rate, n_feat, all_cont_indices, all_ord_indices,
                  WINDOW_SIZE, decay_coef_change=False, batch_size_denominator=None, batch_c = 8):
+        
+        # decay_choice - decay update rules choices (see original code)
+        # contribute_error_rate - used in the original code implementation of classifiers
+        # n_feat - Total number of features (for ease of code)
+        # all_cont_indices - Index of features containing continious type value
+        # all_ord_indices - Index of features containing ordinal/discrete type value
+        # NOTE: By default, all features are assumed to be continious, unill input otherwise
+        # WINDOW_SIZE - a (buffer-like) window to store data instances
+        # decay_coef_change - set ’True’ for learning rate decay, ’False’ otherwise
+        # batch_size_denominator - used in update step in case of learning rate decay
+        # batch_c -added to the denominator for stability in learning rate decay
 
         self.decay_choice = decay_choice
         self.contribute_error_rate = contribute_error_rate

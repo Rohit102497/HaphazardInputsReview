@@ -54,7 +54,7 @@ class LEARNER:
         
         self.Nc += 1
         # Calculation of probability of each word faces 'Divide by Zero' condition giving out NaN values,
-        # (line 110) in the UpdateProbabilities function of this class
+        # (line 114) in the UpdateProbabilities function of this class
         # to handle this, we initialized Nc by [1, 1] instead of [0, 0]
 
         self.Vocabulary = Features # All words seen by the model till time t
@@ -90,6 +90,7 @@ class LEARNER:
 
         return scores
     
+    # Performs prediction of Learner and updates accuracy
     def use(self, Document, DocClass = None):
         scores = self.score(Document)
         pred_class =  np.argmax(scores)
@@ -118,7 +119,7 @@ class LEARNER:
             self.P[Word] = self.WordStats[Word][1] / (self.Nc)
     
     def Update(self, Document, DocClass):
-
+        # Wrapper to perform updates and call other update functions
         self.age += 1
 
         self.Nc[DocClass] += 1

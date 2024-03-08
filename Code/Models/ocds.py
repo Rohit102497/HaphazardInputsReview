@@ -15,6 +15,7 @@ def sigmoid(z):
 def log_sigmoid(x):
     return -np.logaddexp(0, -x)
 
+# Custom implementation of a graph representing the strength of correlation between 2 features
 class Graph:
     def __init__(self, num_feats: int):
         self.G = np.random.random((num_feats, num_feats))        
@@ -22,7 +23,6 @@ class Graph:
     def retrive(self, X: np.array, X_mask: np.array, Ut: list, reduce: bool=False) -> np.array:
         Xt = X*X_mask
         dt = sum(X_mask)
-        # print("mask:", X_mask, "dt: ", dt)
         X_rec = (1/dt) * np.dot(self.G, Xt)
 
         if reduce:
@@ -85,9 +85,15 @@ class Classifier:
 
 class OCDS:
     def __init__(self, num_feats: int, T: int, gamma: float, alpha: float, beta0: float, beta1: float, beta2: float):
-        # T     : number of steps after which 'p' is updated
-        # 'p'   : weighing factor between observer-feature predictions and reconstructed-feature prediction
-        # gamma : Sparcity factor
+        
+        # num_feats - Total number of features that can be observed (for ease of coding)
+        # T - Number of instances after which 'p' (weighing factor) is updated
+        # gamma - Sparcity factor
+        # alpha - Absorption scale parameter used in equation 10 of paper
+        # beta0 - absorption scale introduced by us for the 1st term in eq. 9 of paper
+        # beta1 - tradeoff parameter used in equation 9 of paper
+        # beta2 - tradeoff parameter used in equation 9 of paper
+                                                     
         self.Ut = set()
         self.curr_features = set()
         self.alpha = alpha
@@ -110,6 +116,7 @@ class OCDS:
         return y_pred, y_logit
 
     def update(self, X: np.array, X_mask: np.array, X_rec: np.array, Y: np.array):
+        # Performs updates according to the update rules mentioned in the paper
         Y = -1 if Y==0 else Y.item()
         self.Classifier.update(X, X_rec, Y, self.curr_features, self.Ut)
 
@@ -136,7 +143,6 @@ class OCDS:
         self.t+=1
         tau = np.sqrt(1/self.t)
         delta_w_F_term1 = -2*(Y - wt.T@psi_xt)*psi_xt
-        # print("delta_w_F_term1:", delta_w_F_term1, "w: ", wt.T, "psi_xt:", psi_xt)
         delta_w_F_term2 = self.beta1*entry_wise_subdifferential(wt)
         delta_w_F_term3 = self.beta2*(L + L.T)@wt
 
