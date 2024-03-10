@@ -9,7 +9,9 @@ Evaluation of Methodologies".
 We use 20 different datasets for this project. The link of all the datasets can be found below. Moreover, the datasets are also given in their respective folders inside `DataStorage/` directory.
 Out of the 20 datasets, X are big datasets, hence they are not provided inside the directory. To run them, please download the datsets files form the given link below and place them inside their respective directories (see instructions for each dataset below...).  
 
-<p style="text-align: center;">Samll Datasets</p>  
+<p align="center">
+Small Datsets
+</p>  
 <hr>
 
 - ### WPBC
@@ -74,7 +76,9 @@ Out of the 20 datasets, X are big datasets, hence they are not provided inside t
     Directory: `DataStorage/spamassasin`  
     (provided in repository/not provided in repository)  
 
-<p style="text-align: center;">Medium Datasets</p>  
+<p align="center">
+Medium Datsets
+</p> 
 <hr>
 
 - ### magic04
@@ -92,7 +96,9 @@ Out of the 20 datasets, X are big datasets, hence they are not provided inside t
     Directory: `DataStorage/a8a`  
     (provided in repository/not provided in repository)  
 
-<p style="text-align: center;">Large Datasets</p>  
+<p align="center">
+Large Datsets
+</p>   
 <hr>
 
 - ### diabets_us
@@ -126,53 +132,77 @@ Some of the data sets need to be cleaned and processesed before they can be used
     - The data will automatically be saved in the appropriate directory.
 
 - Diabetes_us  
-    After downloading the dataset from the provided link, follow the instructions at https://www.hindawi.com/journals/bmri/2014/781670/#supplementary-materials to prepare it for analysis
+    - After downloading the dataset from the provided link, follow the instructions at https://www.hindawi.com/journals/bmri/2014/781670/#supplementary-materials to prepare it for analysis
 
 ## Dataset Preparation
 ### Variable P
 For synthetic datasets, we varied the availability of each auxiliary input feature independently by a uniform distribution of probability $p$, i.e., each auxilairy feature is available for $100p\%$. For more information about this, follow paper - Aux-Net (https://link.springer.com/chapter/10.1007/978-3-031-30105-6_46)
 
 ## Files
-<!-- To run the models, see
-1. main.py: All the comparison models can be run from this.
-2. baseline.py: To run the Baseline model (ODL)
-
-The class definition for each comparison model is given in
- - AuxDrop.py
-
-The class definition for ODL baseline is given in
- - ODL.py
-
-The dataloader for each dataset is given in
- - dataset.py -->
+To run the models, see `Code/main.py`. All the comparison models can be run from this.
 
 ## Control Parameters
 
-<!-- For **main.py** file, 
-1. `data_name`: "german", "svmguide3", "magic04", "a8a", "ItalyPowerDemand", "SUSY", "HIGGS"
-2. `type`: "variable_p", "trapezoidal", "obsolete_sudden"
-3. `model_to_run`: "AuxDrop_ODL", "AuxDrop_OGD", "AuxDrop_ODL_DirectedInAuxLayer_RandomOtherLayer", "AuxDrop_ODL_RandomAllLayer", "AuxDrop_ODL_RandomInAuxLayer", "AuxDrop_ODL_RandomInFirstLayer_AllFeatToFirst"
-4. `n`: Learning rate
-5. `aux_feat_prob`: If `type = "variable_p"`, then `aux_feat_prob` needs to be defined. It is the availability of each auxiliary input feature independently by a uniform distribution of probability `aux_feat_prob`
-6. `dropout_p`: The dropout value of AuxLayer
-7. `max_num_hidden_layers`: Number of hidden layers
-8. `qtd_neuron_per_hidden_layer`: Number of neurons in each hidden layers except the AuxLayer
-9. `n_classes`: The number of output classes
-10. `aux_layer`: The position of the AuxLayer in the architecture
-11. `n_neuron_aux_layer`: Number of neurons in the AuxLayer
-12. `b`: This is a parameter of ODL framework. It represents the discount rate
-13. `s`: This is a parameter of ODL framework. It represents the smoothing rate -->
+For **main.py** file, 
+1. `seed` : Seed value  
+_default_ = 2023
 
-For **baseline.py** file,
-<!-- 1. `data_name`: "SUSY", "HIGGS"
-2. `model_to_run`: "ODL"
-3. `data_type`: "only_base", "all_feat"
-4. `n`: Learning rate
-5. `max_num_hidden_layers`: Number of hidden layers
-6. `qtd_neuron_per_hidden_layer`: Number of neurons in each hidden layers
-7. `n_classes`: The number of output classes
-8. `b`: It represents the discount rate
-9. `s`: It represents the smoothing rate -->
+2. `type`: The type of the experiment  
+_default_="noassumption", type=str,  
+_choices_ = ["noassumption", "basefeatures", "bufferstorage"]
+
+<p align="center">
+Data Variables
+</p>
+<hr>
+
+3. `dataname`: The name of the dataset  
+_default_ = "wpbc"  
+_choices_ = ["all", "synthetic", "crowdsense_c5", "crowdsense_c3" "spamassasin", "imdb", "diabetes_us", "higgs", "susy", "a8a" "magic04", "spambase", "krvskp", "svmguide3", "ipd", "german" "diabetes_f", "wbc", "australian", "wdbc", "ionosphere", "wpbc"]
+
+4. `syndatatype`: The type to create suitable synthetic dataset  
+    _default_ = "variable_p"
+
+5. `probavailable`: The probability of each feature being available to create synthetic data  
+    _default_ = 0.5, type = float,
+
+6. `ifbasefeat`: If base features are available  
+    _default_ = False
+
+<p align="center">
+Method Variables
+</p>
+<hr>
+
+7. `methodname`: The name of the method (model)  
+    _default_ = "nb3"  
+    _choices_ = ["nb3", "fae", "olvf", "ocds", "ovfm", "dynfo", "orf3v", "auxnet", "auxdrop"]
+
+8. `initialbuffer`: The storage size of initial buffer trainig  
+    _default_ = 0
+
+9. `ifimputation`: If some features needs to be imputed  
+    _default_ = False
+10. `imputationtype`: The type of imputation technique to create base features  
+    _default_ = 'forwardfill'  
+    _choices_ = ['forwardfill', 'forwardmean', 'zerofill']
+
+11. `nimputefeat`: The number of imputation features  
+    _default_ = 2   
+
+12. `ifdummyfeat`: If some dummy features needs to be created  
+_default_ = False
+
+13. `dummytype`: The type of technique to create dummy base features  
+default = 'standardnormal'
+
+14. `ndummyfeat`: The number of dummy features to create'  
+    _default_ = 1    
+
+15. `ifAuxDropNoAssumpArchChange`: If the Aux-Drop architecture needs to be changed to handle no assumption
+    _default_ = False
+16. `nruns`: The number of times a method should runs (For navie Bayes, it would be 1 because it is a deterministic method)  
+_default_ = 5
 
 ## Dependencies
 1. numpy
@@ -187,8 +217,7 @@ For **baseline.py** file,
 
 ## Running the code
 
-<!-- To run the Aux-Drop model, change the control parameters accordingly in the **main.py** file and run
- - `python Code/main.py`
-
-To run the baseline ODL model, change the control parameters accordingly in the **baseline.py** file and run
- - `python Code/baseline.py` -->
+To run the models, change the control parameters accordingly in the **main.py** file and run
+```
+    python Code/main.py
+```
