@@ -194,7 +194,7 @@ class OnlineTransformFunction():
         n = len(window)
         x = norm.cdf(z_batch_missing)
         # round to avoid numerical errors in ceiling function
-        quantile_indices = np.ceil(np.round_((n + 1) * x - 1, DECIMAL_PRECISION))
+        quantile_indices = np.ceil(np.round((n + 1) * x - 1, DECIMAL_PRECISION))
         quantile_indices = np.clip(quantile_indices, a_min=0,a_max=n-1).astype(int)
         sort = np.sort(window)
         return sort[quantile_indices]

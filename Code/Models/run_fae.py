@@ -25,7 +25,7 @@ def run_fae(X, Y, X_haphazard, num_runs, params_list, data_name):
             start_time = time.time()
             model = FAE(*model_params, data_name=data_name, Document=None, DocClass=None)
             for x, y in tqdm(zip(X_haphazard, Y), total=no_instances):
-                y_pred, y_logit = model.partial_fit(x, int(y))
+                y_pred, y_logit = model.partial_fit(x, int(np.squeeze(y)))
                 Y_pred.append(y_pred)
                 Y_logits.append(y_logit)
             taken_time = time.time() - start_time

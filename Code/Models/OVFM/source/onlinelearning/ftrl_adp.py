@@ -30,7 +30,7 @@ class FTRL_ADP:
         # Update decay rate
         if self.ADAPTIVE:
             self.times += 1
-            self.fails += int(np.abs(y-p)>0.5)
+            self.fails += int(np.squeeze(np.abs(y-p)>0.5))
             if decay_choice==0:
                 self.decay = (np.cbrt(self.times) - 1)/np.cbrt(self.times)
             if decay_choice==1:
@@ -56,7 +56,7 @@ class FTRL_ADP:
                     self.fails_warn = 0
                 else:
                     self.times_warn += 1
-                    self.fails_warn += int(np.abs(y-p)>0.5)
+                    self.fails_warn += int(np.squeeze(np.abs(y-p)>0.5))
                     
                     if ps > self.p_min + 3*self.s_min:
                         self.times = self.times_warn

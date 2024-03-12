@@ -23,7 +23,7 @@ def run_ocds(X, Y, X_haphazard, mask, num_runs, model_params):
     print("Number of experiments: ", len(params_list))
     for k in range(len(params_list)):  # len(params_list)
         print("Experiment number: ", k+1)
-        params = params_list[i]
+        params = params_list[k]
         eval_list = []
         for j in range(num_runs):
             # Seeding for model

@@ -1,13 +1,10 @@
 # HaphazardInputsReview
 
 ## Overview
-This repository contains datasets and implementation codes of different models for the paper, titled "Adaptive Online Learning under Haphazard Input
-Conditions: A Comprehensive Review, Metrics, and
-Evaluation of Methodologies".
+This repository contains datasets and implementation codes of different models for the paper, titled "Online Learning under Haphazard Input Conditions: A Comprehensive Review and Analysis".
 
 ## Datasets
-We use 20 different datasets for this project. The link of all the datasets can be found below. Moreover, the datasets are also given in their respective folders inside `DataStorage/` directory.
-Out of the 20 datasets, X are big datasets, hence they are not provided inside the directory. To run them, please download the datsets files form the given link below and place them inside their respective directories (see instructions for each dataset below...).  
+We use 20 different datasets for this project. The link of all the datasets can be found below. Moreover, some of the datasets are also given in their respective folders inside `Data/` directory. To run them, please download the datsets files form the given link below and place them inside their respective directories (see instructions for each dataset below...).  
 
 <p align="center">
 Small Datsets
@@ -74,7 +71,9 @@ Small Datsets
 - ### spamassasin
     Data link: https://spamassassin.apache.org/old/publiccorpus/  
     Directory: `DataStorage/spamassasin`  
-    (provided in repository/not provided in repository)  
+    (provided in repository/not provided in repository) 
+
+>Note: Two more small datasets, used for analysis namely, crowdsense(c3) and crowdsense(c5), are not provided due to their unavailability in public domain.
 
 <p align="center">
 Medium Datsets
@@ -183,6 +182,7 @@ Method Variables
 
 9. `ifimputation`: If some features needs to be imputed  
     _default_ = False
+    
 10. `imputationtype`: The type of imputation technique to create base features  
     _default_ = 'forwardfill'  
     _choices_ = ['forwardfill', 'forwardmean', 'zerofill']
@@ -201,6 +201,7 @@ default = 'standardnormal'
 
 15. `ifAuxDropNoAssumpArchChange`: If the Aux-Drop architecture needs to be changed to handle no assumption
     _default_ = False
+
 16. `nruns`: The number of times a method should runs (For navie Bayes, it would be 1 because it is a deterministic method)  
 _default_ = 5
 
@@ -219,5 +220,17 @@ _default_ = 5
 
 To run the models, change the control parameters accordingly in the **main.py** file and run
 ```
-    python Code/main.py
+python Code/main.py
 ```
+Example: To run  model `nb3` on `wpbc` dataset, with probability of available features 0.75, use the code below
+```
+python Code/main.py --dataname wpbc --probavailable 0.75 --methodname nb3
+```
+> Note: For `auxnet` and `auxdrop`, set either of `--ifimputation True` or `--ifdummyfeat True`  
+>```
+>python Code/main.py --dataname ionosphere --probavailable 0.75 --methodname auxnet --ifimputation True
+>```
+>or
+>```
+>python Code/main.py --dataname ionosphere --probavailable 0.75 --methodname auxnet --ifdummyfeat True
+>```

@@ -38,7 +38,7 @@ class FeatStats:
 
     def update(self, x=None, y=None):
         if( (x is not None) and (y is not None) ):
-            y = int(y)
+            y = int(np.squeeze(y))
             self.slidingWindow.add(True)
             self.seenInstances += 1
             self.digestPerClass[y].update(x)

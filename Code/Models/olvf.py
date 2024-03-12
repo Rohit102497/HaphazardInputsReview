@@ -26,7 +26,7 @@ class FeatureSpaceClassifier:
     def loss(self, shared, new, Y, Y_pred, X_mask):
         if Y == -1:
             Y = 0
-        I = float(int(Y) == int(Y_pred))
+        I = float(int(np.squeeze(Y)) == int(np.squeeze(Y_pred)))
 
         exp1 = 1
         exp2 = 1

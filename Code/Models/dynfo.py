@@ -187,7 +187,7 @@ class DynFo:
 
         # Choose 'accepted features' from featureSet for new learner, using the delta parameter
         numFeatures = max(int(self.delta*len(self.FeatureSet)), 1)
-        accepted_features = random.sample(self.FeatureSet, numFeatures)
+        accepted_features = random.sample(sorted(self.FeatureSet), numFeatures)
 
         # Get instances from the instance buffer that has the accepted features, and train a new learner on those instances
         newLearner = DecisionStump()
@@ -242,7 +242,7 @@ class DynFo:
             if self.learners[j].splitDescision() not in self.currentFeatures:
                 self.weights[j] -= self.epsilon
             else:
-                i = int(self.learners[j].predict(X)[0] == Y)
+                i = int(np.squeeze(self.learners[j].predict(X)[0] == Y))
                 self.weights[j] = (i*2*self.alpha + self.weights[j]) / (1 + self.alpha)
         
         # get index of learners to relearn
@@ -264,7 +264,7 @@ class DynFo:
         self.updateFeatureSet(X_mask)
                 
         y_pred, y_logits = self.predict(X)
-        self.window.add(int(y_pred == Y))
+        self.window.add(int(np.squeeze(y_pred == Y)))
         if self.window.errorRate() > self.gamma:
             self.initNewLearner()
             self.updateGamma()

@@ -130,8 +130,6 @@ if __name__ == '__main__':
         else:
             X, Y, X_haphazard, mask = data_load.data_load_real(data_name)
             result_addr = result_addr + ".data"
-        
-        print(X.shape, Y.shape, X_haphazard.shape, mask.shape, mask.shape[0]*mask.shape[1] - np.sum(mask), np.sum(Y))
 
         #--------------Model Configs--------------#
         if method_name == "nb3":
