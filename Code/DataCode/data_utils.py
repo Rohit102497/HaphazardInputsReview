@@ -1,13 +1,12 @@
 # Libraries required
 import numpy as np
 import pandas as pd
-# import os
+import os
 import pickle
 # import sys
 
 def data_folder_path(data_folder, data_name):
-    storage_folder = "/data/"
-    return storage_folder + data_folder + "/" + data_name
+    return os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'Data', data_folder, data_name)
 
 # Load wpbc data
 def data_load_wpbc(data_folder):

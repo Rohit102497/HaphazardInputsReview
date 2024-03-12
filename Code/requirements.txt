@@ -1,2 +1,7 @@
+numpy
+pandas
+scikit-learn
+torch
+tqdm
 tdigest == 0.5.2.2
 statsmodels == 0.14.0

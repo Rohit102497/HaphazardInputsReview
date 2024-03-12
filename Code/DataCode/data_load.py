@@ -1,12 +1,12 @@
 # Libraries required
 import numpy as np
 
-from data_utils import data_load_wpbc, data_load_wdbc, data_load_wbc, data_load_ionosphere
-from data_utils import data_load_australian, data_load_german, data_load_ipd, data_load_svmguide3
-from data_utils import data_load_krvskp, data_load_spambase, data_load_magic04, data_load_a8a
-from data_utils import data_load_susy, data_load_higgs, data_load_diabetes_f
-from data_utils import data_load_diabetes_us, data_load_imdb, data_load_spamassasin
-from data_utils import data_load_crowdsense_c3, data_load_crowdsense_c5
+from DataCode.data_utils import data_load_wpbc, data_load_wdbc, data_load_wbc, data_load_ionosphere
+from DataCode.data_utils import data_load_australian, data_load_german, data_load_ipd, data_load_svmguide3
+from DataCode.data_utils import data_load_krvskp, data_load_spambase, data_load_magic04, data_load_a8a
+from DataCode.data_utils import data_load_susy, data_load_higgs, data_load_diabetes_f
+from DataCode.data_utils import data_load_diabetes_us, data_load_imdb, data_load_spamassasin
+from DataCode.data_utils import data_load_crowdsense_c3, data_load_crowdsense_c5
 
 # Making sure that each instance has atleast one feature
 def check_mask_each_instance(mask):

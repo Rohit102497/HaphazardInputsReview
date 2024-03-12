@@ -6,7 +6,7 @@ import numpy as np
 import sys
 import pickle
 sys.path.append('/code/DataCode/')
-path_to_result = "/results/" 
+path_to_result = "./Results/" 
 
 #--------------Import Functions--------------#
 from Utils import utils, metric_utils
@@ -201,6 +201,8 @@ if __name__ == '__main__':
         result_dict = {"params": param_dict, "results": result}
 
         #--------------Store results and all variables--------------#
-        
+        directory, filename = os.path.split(result_addr)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
         with open(result_addr, 'wb') as file: 
             pickle.dump(result_dict, file) 

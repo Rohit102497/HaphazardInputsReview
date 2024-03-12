@@ -74,7 +74,7 @@ class NB3:
 
     # Algorithm Update
     def Update(self, Document, DocClass):
-        DocClass = int(DocClass)
+        DocClass = int(np.squeeze(DocClass))
         # Update Number of documents in each class
         self.Nc[DocClass] += 1.0
 
