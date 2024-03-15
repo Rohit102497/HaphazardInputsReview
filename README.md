@@ -138,7 +138,8 @@ Some of the data sets need to be cleaned and processesed before they can be used
 For synthetic datasets, we varied the availability of each auxiliary input feature independently by a uniform distribution of probability $p$, i.e., each auxilairy feature is available for $100p\%$. For more information about this, follow paper - Aux-Net (https://link.springer.com/chapter/10.1007/978-3-031-30105-6_46)
 
 ## Files
-To run the models, see `Code/main.py`. All the comparison models can be run from this.
+To run the models, see `Code/main.py`. All the comparison models can be run from this.  
+After running a model on a certain dataset, run `Code/read_results.py` to display and save the evaluation in csv format.  
 
 ## Control Parameters
 
@@ -203,7 +204,23 @@ default = 'standardnormal'
     _default_ = False
 
 16. `nruns`: The number of times a method should runs (For navie Bayes, it would be 1 because it is a deterministic method)  
-_default_ = 5
+_default_ = 5  
+
+For **read_results.py** file,
+1. `type`: The type of the experiment  
+    _default_ ="noassumption"  
+    _choices_ = ["noassumption", "basefeatures" "bufferstorage"]  
+
+2. `dataname`: The name of the dataset  
+    _default_ = "wpbc"  
+    _choices_ = ["synthetic", "real", "crowdsense_c5", "crowdsense_c3", "spamassasin", "imdb", "diabetes_us", "higgs", "susy", "a8a", "magic04", "spambase", "krvskp", "svmguide3", "ipd", "german", "diabetes_f", "wbc", "australian", "wdbc", "ionosphere", "wpbc"]
+
+3. `probavailable`: The probability of each feature being available to create synthetic data  
+    _default_ = 0.5
+
+4. `methodname`:  The name of the method  
+    _default_ = "nb3"  
+    _choices_ = ["nb3", "fae", "olvf", "ocds", "ovfm", "dynfo", "orf3v", "auxnet", "auxdrop"]
 
 ## Dependencies
 1. numpy
@@ -227,10 +244,20 @@ Example: To run  model `nb3` on `wpbc` dataset, with probability of available fe
 python Code/main.py --dataname wpbc --probavailable 0.75 --methodname nb3
 ```
 > Note: For `auxnet` and `auxdrop`, set either of `--ifimputation True` or `--ifdummyfeat True`  
->```
->python Code/main.py --dataname ionosphere --probavailable 0.75 --methodname auxnet --ifimputation True
->```
->or
->```
->python Code/main.py --dataname ionosphere --probavailable 0.75 --methodname auxnet --ifdummyfeat True
->```
+```
+python Code/main.py --dataname ionosphere --probavailable 0.75 --methodname auxnet --ifimputation True
+```
+or
+```
+python Code/main.py --dataname ionosphere --probavailable 0.75 --methodname auxnet --ifdummyfeat True
+```
+<hr>
+
+To read the results and save them in .csv format, run **read_results.py** with appropriate control parameters.
+```
+python Code/read_results.py
+```
+Example: To read the results of `nb3` on `wpbc` dataset, with probability of available features 0.75, use the code below
+```
+python Code/read_results.py --dataname wpbc --probavailable 0.75 --methodname nb3
+```

@@ -37,7 +37,7 @@ if __name__ == '__main__':
 
     for data_name in data_name_list:
 
-        path_to_result="/results/"
+        path_to_result="./Results/"
         result_addr = path_to_result + type + "/" + method_name + "/" + data_name
         df_addr = result_addr
 

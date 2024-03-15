@@ -1,0 +1,2 @@
+,Num. Errors,Accuracy,AUROC,AUPRC,Bal. Accuracy,Time
+"{'no_of_base_layers': 5, 'no_of_end_layers': 5, 'nodes_in_each_layer': 50, 'b': 0.99, 's': 0.2, 'lr': 0.001}",126.60(0.89),63.93(0.25),47.50(0.85),64.72(1.07),49.87(0.20),63.38(1.80)
