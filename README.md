@@ -6,18 +6,18 @@ This repository contains datasets and implementation codes of different models f
 ## File Structure of the Directory
 
 [HaphazardInputsReview/](https://github.com/Rohit102497/HaphazardInputsReview)  
-┣ [Code/](./HaphazardInputsReview/Code)  
-┃ ┣ [AnalyseResults/](./HaphazardInputsReview/Code/AnalyseResults)  
-┃ ┣ [Config/](./HaphazardInputsReview/Code/Config)   
-┃ ┣ [DataCode/](./HaphazardInputsReview/Code/DataCode)   
-┃ ┣ [Models/](./HaphazardInputsReview/Code/Models)  
-┃ ┣ [main.py](./HaphazardInputsReview/Code/main.py)  
-┃ ┣ [read_results.py](./HaphazardInputsReview/Code/read_results.py)  
-┃ ┗ [requirements.txt](./HaphazardInputsReview/Code/requirements.txt)  
-┣ [Data/](./HaphazardInputsReview/Data)  
-┣ [Results/](./HaphazardInputsReview/Results)  
-┣ [.gitignore](./HaphazardInputsReview/.gitignore)  
-┗ [README.md](./HaphazardInputsReview/README.md)  
+┣ [Code/](https://github.com/Rohit102497/HaphazardInputsReview/tree/README//Code)  
+┃ ┣ [AnalyseResults/](https://github.com/Rohit102497/HaphazardInputsReview/tree/README//Code/AnalyseResults)  
+┃ ┣ [Config/](https://github.com/Rohit102497/HaphazardInputsReview/tree/README//Code/Config)   
+┃ ┣ [DataCode/](https://github.com/Rohit102497/HaphazardInputsReview/tree/README//Code/DataCode)   
+┃ ┣ [Models/](https://github.com/Rohit102497/HaphazardInputsReview/tree/README//Code/Models)  
+┃ ┣ [main.py](https://github.com/Rohit102497/HaphazardInputsReview/tree/README//Code/main.py)  
+┃ ┣ [read_results.py](https://github.com/Rohit102497/HaphazardInputsReview/tree/README//Code/read_results.py)  
+┃ ┗ [requirements.txt](https://github.com/Rohit102497/HaphazardInputsReview/tree/README//Code/requirements.txt)  
+┣ [Data/](https://github.com/Rohit102497/HaphazardInputsReview/tree/README//Data)  
+┣ [Results/](https://github.com/Rohit102497/HaphazardInputsReview/tree/README//Results)  
+┣ [.gitignore](https://github.com/Rohit102497/HaphazardInputsReview/tree/README//.gitignore)  
+┗ [README.md](https://github.com/Rohit102497/HaphazardInputsReview/tree/README//README.md)  
 
 
 ## Datasets
