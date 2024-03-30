@@ -3,7 +3,22 @@
 ## Overview
 This repository contains datasets and implementation codes of different models for the paper, titled "Online Learning under Haphazard Input Conditions: A Comprehensive Review and Analysis".
 
-## File Structure
+## File Structure of the Directory
+
+[HaphazardInputsReview/](https://github.com/Rohit102497/HaphazardInputsReview)  
+┣ [Code/](./HaphazardInputsReview/Code)  
+┃ ┣ [AnalyseResults/](./HaphazardInputsReview/Code/AnalyseResults)  
+┃ ┣ [Config/](./HaphazardInputsReview/Code/Config)   
+┃ ┣ [DataCode/](./HaphazardInputsReview/Code/DataCode)   
+┃ ┣ [Models/](./HaphazardInputsReview/Code/Models)  
+┃ ┣ [main.py](./HaphazardInputsReview/Code/main.py)  
+┃ ┣ [read_results.py](./HaphazardInputsReview/Code/read_results.py)  
+┃ ┗ [requirements.txt](./HaphazardInputsReview/Code/requirements.txt)  
+┣ [Data/](./HaphazardInputsReview/Data)  
+┣ [Results/](./HaphazardInputsReview/Results)  
+┣ [.gitignore](./HaphazardInputsReview/.gitignore)  
+┗ [README.md](./HaphazardInputsReview/README.md)  
+
 
 ## Datasets
 We use 20 different datasets for this project. The link of all the datasets can be found below. Moreover, some of the datasets are also given in their respective folders inside `Data/` directory. To run them, please download the datsets files form the given link below and place them inside their respective directories (see instructions for each dataset below...).  
