@@ -3,6 +3,8 @@
 ## Overview
 This repository contains datasets and implementation codes of different models for the paper, titled "Online Learning under Haphazard Input Conditions: A Comprehensive Review and Analysis".
 
+## File Structure
+
 ## Datasets
 We use 20 different datasets for this project. The link of all the datasets can be found below. Moreover, some of the datasets are also given in their respective folders inside `Data/` directory. To run them, please download the datsets files form the given link below and place them inside their respective directories (see instructions for each dataset below...).  
 
@@ -230,8 +232,8 @@ For **read_results.py** file,
 5. tqdm
 6. os
 7. pickle
-8. tdigest
-9. statsmodels
+8. tdigest (version == 0.5.2.2)
+9. statsmodels (version == 0.14.0)
 
 ## Running the code
 
@@ -243,13 +245,17 @@ Example: To run  model `nb3` on `wpbc` dataset, with probability of available fe
 ```
 python Code/main.py --dataname wpbc --probavailable 0.75 --methodname nb3
 ```
-> Note: For `auxnet` and `auxdrop`, set either of `--ifimputation True` or `--ifdummyfeat True`  
+> Note: For `auxnet` , set either of `--ifimputation True` or `--ifdummyfeat True`, and for `auxdrop` set `--ifAuxDropNoAssumpArchChange True` (as these models were modified from their original implementation to support the absence of (previously required) base-feature)
 ```
 python Code/main.py --dataname ionosphere --probavailable 0.75 --methodname auxnet --ifimputation True
 ```
 or
 ```
 python Code/main.py --dataname ionosphere --probavailable 0.75 --methodname auxnet --ifdummyfeat True
+```
+and
+```
+python Code/main.py --dataname synthetic --probavailable 0.75 --methodname auxdrop --ifAuxDropNoAssumpArchChange True
 ```
 <hr>
 
