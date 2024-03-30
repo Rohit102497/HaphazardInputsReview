@@ -1,4 +1,4 @@
-# HaphazardInputsReview
+# Online Learning under Haphazard Input Conditions: A Comprehensive Review and Analysis
 
 ## Overview
 This repository contains datasets and implementation codes of different models for the paper, titled "Online Learning under Haphazard Input Conditions: A Comprehensive Review and Analysis".

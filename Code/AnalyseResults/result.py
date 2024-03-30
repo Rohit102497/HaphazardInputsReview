@@ -32,7 +32,7 @@ class Results:
                 "ORF3V":  {"crowdsense_c3": 99.40, "crowdsense_c5": 95.62, "spamassasin": 94.05,
                         "imdb": 76.47, "diabetes_us": 50.00},
                 "AuxNet":  {"crowdsense_c3": 87.87, "crowdsense_c5": 49.93, "spamassasin": 97.28,
-                        "diabetes_us": 50.00},
+                        "imdb": 67.41, "diabetes_us": 50.00},
                 "AuxDrop":  {"crowdsense_c3": 93.15, "crowdsense_c5": 83.72, "spamassasin": 62.08,
                         "imdb": 73.10, "diabetes_us": 50.00},
                 }
@@ -254,7 +254,7 @@ class Results:
                 "ORF3V":  {"crowdsense_c3": 33.59, "crowdsense_c5": 33.80, "spamassasin": 1741.31, 
                         "imdb": 2768.24, "diabetes_us": 491.84},
                 "AuxNet":  {"crowdsense_c3": 4909.36, "crowdsense_c5": 5563.30, "spamassasin": 67934.42, 
-                        "diabetes_us": 25760.59},
+                        "imdb": 223699.04, "diabetes_us": 25760.59},
                 "AuxDrop":  {"crowdsense_c3": 464.23, "crowdsense_c5": 35.72, "spamassasin": 18071.34, 
                         "imdb": 46437.42, "diabetes_us": 567.92},        
         }
