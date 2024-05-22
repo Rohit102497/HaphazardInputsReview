@@ -1,5 +1,17 @@
 # Online Learning under Haphazard Input Conditions: A Comprehensive Review and Analysis
 
+## Citation
+
+Please consider citing the below paper, if you are using the code provided in this repository.
+```
+@article{agarwal2024online,
+  title={Online Learning under Haphazard Input Conditions: A Comprehensive Review and Analysis},
+  author={Agarwal, Rohit and Das, Arijit and Horsch, Alexander and Agarwal, Krishna and Prasad, Dilip K},
+  journal={arXiv preprint arXiv:2404.04903},
+  year={2024}
+}
+```
+
 ## Overview
 This repository contains datasets and implementation codes of different models for the paper, titled "Online Learning under Haphazard Input Conditions: A Comprehensive Review and Analysis".
 
