@@ -136,6 +136,7 @@ def config_olvf(data_name, num_feat):
     
     return n_runs, config_dict
 
+# --------- OCDS ------------
 def config_ocds(num_feat, data_name):
     config_dict = {}
     gamma = [np.round(150/num_feat, 3)]# It is based on the number of features. The rule is to keep U_t < 150.
@@ -203,6 +204,36 @@ def config_ocds(num_feat, data_name):
     #     config_dict['beta1'] = beta1
     #     config_dict['beta2'] = beta2
 
+    
+    return config_dict
+
+# --------- OLIFL ------------
+def config_olifl(data_name):
+    config_dict = {}
+
+    params_list = {
+        'wpbc':         {"C": [None], "option": [None]},
+        'ionosphere':   {"C": [None], "option": [None]},
+        'wdbc':         {"C": [None], "option": [None]},
+        'australian':   {"C": [None], "option": [None]},
+        'wbc':          {"C": [None], "option": [None]},
+        'diabetes_f':   {"C": [None], "option": [None]},
+        'crowdsense_c3':{"C": [None], "option": [None]},
+        'crowdsense_c5':{"C": [None], "option": [None]},
+        'german':       {"C": [None], "option": [None]},
+        'ipd':          {"C": [None], "option": [None]},
+        'svmguide3':    {"C": [None], "option": [None]},
+        'krvskp':       {"C": [None], "option": [None]},
+        'spambase':     {"C": [None], "option": [None]},
+        'spamassasin':  {"C": [None], "option": [None]},
+        'magic04':      {"C": [0.001], "option": [0]},
+        'imdb':         {"C": [None], "option": [None]},
+        'a8a':          {"C": [None], "option": [None]},
+        'diabetes_us':  {"C": [None], "option": [None]},
+        'susy':         {"C": [None], "option": [None]},
+        'higgs':        {"C": [None], "option": [None]},
+    }
+    config_dict = params_list[data_name]
     
     return config_dict
 

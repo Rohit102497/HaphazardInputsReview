@@ -17,6 +17,7 @@ from Models.run_olvf import run_olvf
 from Models.run_dynfo import run_dynfo
 from Models.run_orf3v import run_orf3v
 from Models.run_ocds import run_ocds
+from Models.run_olifl import run_olifl
 from Models.run_auxdrop import run_auxdrop, run_auxdrop_arch_change
 from Models.run_ovfm import run_ovfm
 from Models.run_auxnet import run_auxnet
@@ -47,7 +48,7 @@ if __name__ == '__main__':
 
     # Method Variables
     parser.add_argument('--methodname', default = "nb3", type = str,
-                        choices = ["nb3", "fae", "olvf", "ocds", "ovfm", 
+                        choices = ["nb3", "fae", "olvf", "ocds", "olifl", "ovfm", 
                                    "dynfo", "orf3v", "auxnet", "auxdrop"],
                         help = "The name of the method")
     parser.add_argument('--initialbuffer', default = 0, type = int,
@@ -148,6 +149,8 @@ if __name__ == '__main__':
             param_dict["config"] = config_models.config_ocds(X.shape[1], data_name)
             if data_name in ["crowdsense_c3", "crowdsense_c5"]:
                 X_haphazard = X_haphazard/1000.0 # The internal values are shooting up to infinity. To curtail that we normalize the inputs be dividing it by 1000.
+        elif method_name == "olifl":
+            param_dict["config"] = config_models.config_olifl(data_name)
         elif method_name == "ovfm":
             param_dict["config"] = config_models.config_ovfm(data_name)  
         elif method_name == "dynfo":
@@ -182,6 +185,8 @@ if __name__ == '__main__':
             result = run_olvf(X_haphazard, mask, Y, n_runs, param_dict["config"])
         elif method_name == "ocds":
             result = run_ocds(X, Y, X_haphazard, mask, n_runs, param_dict["config"])
+        elif method_name == "olifl":
+            result = run_olifl(X, Y, X_haphazard, mask, n_runs, param_dict["config"])
         elif method_name == "ovfm":
             result = run_ovfm(X, Y, X_haphazard, mask, n_runs, param_dict["config"])
         elif method_name == "dynfo":
