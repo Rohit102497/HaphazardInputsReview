@@ -7,14 +7,12 @@ import time
 
 def create_param_list(model_params):
     params_list = []
-    for t in model_params['T']:
-        for gamma in model_params['gamma']:
-            for alpha in model_params['alpha']:
-                for beta0 in model_params['beta0']:
-                    for beta1 in model_params['beta1']:
-                        for beta2 in model_params['beta2']:
-                            params_list.append({'T': t, 'gamma': gamma, 'alpha': alpha, 
-                                'beta0': beta0, 'beta1': beta1, 'beta2': beta2})
+    for gamma in model_params['gamma']:
+        for alpha in model_params['alpha']:
+            for beta1 in model_params['beta1']:
+                for beta2 in model_params['beta2']:
+                    params_list.append({'gamma': gamma, 'alpha': alpha, 
+                        'beta1': beta1, 'beta2': beta2})
     return params_list
 
 def run_ocds(X, Y, X_haphazard, mask, num_runs, model_params):
@@ -32,8 +30,9 @@ def run_ocds(X, Y, X_haphazard, mask, num_runs, model_params):
             Y_logits = []
 
             start_time = time.time()
-            model = OCDS(X.shape[1], params['T'], params['gamma'], params['alpha'], 
-                         params['beta0'], params['beta1'], params['beta2'])
+            params['lamda'] = (2*params['beta1'] + params['beta2']) / 2.0
+            model = OCDS(params['alpha'], params['lamda'], params['beta1'], params['gamma'], 
+                         X.shape[1])
             for i in tqdm(range(0, len(Y))):
                 x, x_mask, y = X_haphazard[i], mask[i], Y[i]
                 y_pred, y_logit = model.partial_fit(x, x_mask, y)
